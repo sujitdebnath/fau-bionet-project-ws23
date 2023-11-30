@@ -2,8 +2,8 @@ from Pipeline import Pipeline
 
 if __name__ == '__main__':
     pipeline = Pipeline(verbosity_lv=3,
-                        source_file_path='data/filtered_gene_bc_matrices/hg19/',
-                        results_file_path='write/SC3.h5ad')
+                        source_file_path='data/WB_Lysis_Granulocytes_5p_Introns_8kCells_filtered_feature_bc_matrix/filtered_feature_bc_matrix',
+                        results_file_path='write/new.h5ad')
 
     pipeline.plot_highest_expr_genes()
 

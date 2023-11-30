@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -70,6 +72,9 @@ class Pipeline:
         sc.pl.pca_variance_ratio(self.adata, log=True)
 
     def write_result_file(self):
+        if not os.path.exists('write'):
+            os.mkdir('write')
+
         self.adata.write(self.result_file_path)
 
     def find_neighbours(self, n_neighbors, n_pcs):
