@@ -8,6 +8,7 @@ contourpy==1.2.0
 cycler==0.12.1
 exceptiongroup==1.2.0
 fonttools==4.45.1
+gunicorn==21.2.0
 h11==0.14.0
 h5py==3.10.0
 htmltools==0.4.1

@@ -97,5 +97,7 @@ def server(input: Inputs, output: Outputs, session: Session):
         return
 
 
-app = App(app_ui, server)
-app.run()
+if __name__ == '__main__':
+    app = App(app_ui, server)
+    app.run()
+
