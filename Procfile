@@ -1,1 +1,1 @@
-web: shiny run 
+web: shiny run -h 0.0.0.0 -p 8080 
