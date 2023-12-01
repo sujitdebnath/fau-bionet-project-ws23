@@ -7,6 +7,8 @@ from PIL import Image
 from datetime import datetime
 
 app_ui = ui.page_fluid(
+    # ui.head_content(ui.include_js("js/main.js", method="inline")),
+
     ui.h1("BioNet Project"),
     ui.p("Created by Farzam"),
     ui.layout_sidebar(
