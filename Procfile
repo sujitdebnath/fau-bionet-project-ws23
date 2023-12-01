@@ -1,1 +1,1 @@
-web: shiny run -h $HOST -p $PORT 
+web: shiny run -h 0.0.0.0 -p $PORT 
