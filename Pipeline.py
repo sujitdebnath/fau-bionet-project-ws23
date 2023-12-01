@@ -20,6 +20,12 @@ class Pipeline:
         sc.logging.print_header()
         sc.settings.set_figure_params(dpi=80, facecolor='white')
 
+        if not os.path.exists('www'):
+            os.mkdir('www')
+
+        if not os.path.exists('write'):
+            os.mkdir('write')
+
     def _load_data(self):
         adata = sc.read_10x_mtx(
             self.source_file_path,  # the directory with the `.mtx` file

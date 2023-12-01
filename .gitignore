@@ -8,6 +8,8 @@ __pycache__/
 
 # data directory
 cache/
+www/
+write/
 rsconnect-python/
 
 
