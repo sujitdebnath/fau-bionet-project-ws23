@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import matplotlib.pyplot as plt
+import shutil
 
 
 class Pipeline:
@@ -16,12 +17,12 @@ class Pipeline:
         self._load_data()
 
     def _set_settings(self):
-        sc.settings.verbosity = 3  # verbosity: errors (0), warnings (1), info (2), hints (3)
+        sc.settings.verbosity = self.verbosity_lv  # verbosity: errors (0), warnings (1), info (2), hints (3)
         sc.logging.print_header()
         sc.settings.set_figure_params(dpi=80, facecolor='white')
 
-        if not os.path.exists('www'):
-            os.mkdir('www')
+        if not os.path.exists('figures'):
+            os.mkdir('figures')
 
         if not os.path.exists('write'):
             os.mkdir('write')
@@ -39,7 +40,7 @@ class Pipeline:
         sc.pl.highest_expr_genes(self.adata, n_top=20, show=False)
         # plt.title(f'Highest Expressed Genes in {self.name}')
         file_name = f'highest_expr_genes-{self.name}.png'
-        self.highest_expr_genes_url = f'www/{file_name}'
+        self.highest_expr_genes_url = f'figures/{file_name}'
         plt.savefig(self.highest_expr_genes_url)
 
     def plot_highly_variable_genes(self):
@@ -48,7 +49,7 @@ class Pipeline:
         sc.pl.highly_variable_genes(self.adata, show=False)
         # plt.title(f'Highly Variable Genes in {self.name}')
         file_name = f'highly_variable_genes-{self.name}.png'
-        self.highly_variable_genes_url = f'www/{file_name}'
+        self.highly_variable_genes_url = f'figures/{file_name}'
         plt.savefig(self.highly_variable_genes_url)
 
     def preprocessing(self):
@@ -64,14 +65,14 @@ class Pipeline:
         sc.pl.scatter(self.adata, x='total_counts', y='pct_counts_mt', show=False)
         # plt.title(f'PCT Counts (MT) in {self.name}')
         file_name = f'pct_counts_mt-{self.name}.png'
-        self.pct_counts_mt_url = f'www/{file_name}'
+        self.pct_counts_mt_url = f'figures/{file_name}'
         plt.savefig(self.pct_counts_mt_url)
 
         plt.clf()
         sc.pl.scatter(self.adata, x='total_counts', y='n_genes_by_counts', show=False)
         # plt.title(f'Number of Genes by Count in {self.name}')
         file_name = f'n_genes_by_counts-{self.name}.png'
-        self.n_genes_by_counts_url = f'www/{file_name}'
+        self.n_genes_by_counts_url = f'figures/{file_name}'
         plt.savefig(self.n_genes_by_counts_url)
 
     def filter_data(self):
@@ -97,7 +98,7 @@ class Pipeline:
         sc.pl.pca(self.adata, color='CST3', show=False)
         # plt.title(f'PCA in {self.name}')
         file_name = f'pca-{self.name}.png'
-        self.pca_url = f'www/{file_name}'
+        self.pca_url = f'figures/{file_name}'
         plt.savefig(self.pca_url)
 
     def plot_pca_variance_ration(self):
@@ -105,7 +106,7 @@ class Pipeline:
         sc.pl.pca_variance_ratio(self.adata, log=True, show=False)
         # plt.title(f'PCA Variance in {self.name}')
         file_name = f'pca_variance-{self.name}.png'
-        self.pca_variance_url = f'www/{file_name}'
+        self.pca_variance_url = f'figures/{file_name}'
         plt.savefig(self.pca_variance_url)
 
     def write_result_file(self):
@@ -128,7 +129,7 @@ class Pipeline:
         sc.pl.umap(self.adata, color=colors, use_raw=use_raw, show=False)
         # plt.title(f'UMAP in {self.name}')
         file_name = f'umap-{colors}-{self.name}.png'
-        self.umap_url = f'www/{file_name}'
+        self.umap_url = f'figures/{file_name}'
         plt.savefig(self.umap_url)
 
     def rank_gene_groups(self, n_genes, group_by='leiden', method='t-test'):
@@ -137,7 +138,7 @@ class Pipeline:
         sc.pl.rank_genes_groups(self.adata, n_genes=n_genes, sharey=False, show=False)
         # plt.title(f'Rank Genes Group in {self.name}')
         file_name = f'rank_genes_group_by-{group_by}-{method}-{self.name}.png'
-        self.rank_genes_groups_url = f'www/{file_name}'
+        self.rank_genes_groups_url = f'figures/{file_name}'
         plt.savefig(self.rank_genes_groups_url)
 
     def plot_violin_data(self):
@@ -145,7 +146,7 @@ class Pipeline:
         sc.pl.rank_genes_groups_violin(self.adata, groups='0', n_genes=8, show=False)
         # plt.title(f'Rank Genes Group Violin in {self.name}')
         file_name = f'rank_genes_groups_violin-{self.name}.png'
-        self.rank_genes_groups_violin_url = f'www/{file_name}'
+        self.rank_genes_groups_violin_url = f'figures/{file_name}'
         plt.savefig(self.rank_genes_groups_violin_url)
 
     def cell_type_annotation(self):
