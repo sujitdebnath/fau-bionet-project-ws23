@@ -6,6 +6,8 @@ import os
 
 
 app_ui = ui.page_fluid(
+    ui.h1("BioNet Project"),
+    ui.p("Created by Farzam"),
     ui.layout_sidebar(
         ui.panel_sidebar(
 
@@ -98,4 +100,5 @@ def server(input: Inputs, output: Outputs, session: Session):
 
 
 app = App(app_ui, server)
+app.run()
 
