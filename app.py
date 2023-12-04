@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from shiny import App, Inputs, Outputs, Session, reactive, render, ui, req
 from shiny.types import FileInfo, ImgData
 from Pipeline import Pipeline
@@ -6,7 +7,7 @@ from PIL import Image
 from datetime import datetime
 
 app_ui = ui.page_fluid(
-    # ui.head_content(ui.include_js("js/main.js", method="inline")),
+    ui.head_content(ui.include_js("js/main.js", method="inline")),
 
     ui.h1("BioNet Project"),
     ui.p("Created by Farzam"),
@@ -32,7 +33,7 @@ app_ui = ui.page_fluid(
                 },
             ),
 
-            ui.input_action_button("run", "Begin Analysis", class_="btn-success"),
+            ui.input_action_button("run", "Begin Analysis", class_="btn-success", onclick='freeze_buttons();'),
             ui.input_action_button("plot_figures", "Plot Figures", class_="btn-primary"),
             width=2,
         ),
@@ -104,28 +105,6 @@ pipelines_info = {
     'PBMC3k': None,
     'WB_Lysis_Granulocytes_5p_Introns_8kCells': None
 }
-
-
-def merge_umap_plots_vertically(image_paths, output_path):
-    images = [Image.open(path) for path in image_paths]
-
-    # Get the maximum width among all images
-    max_width = max(img.width for img in images)
-
-    # Calculate the total height by summing individual image heights
-    total_height = sum(img.height for img in images)
-
-    # Create a new image with the maximum width and total height
-    result = Image.new("RGB", (max_width, total_height), (255, 255, 255))
-
-    # Paste each image onto the result image
-    current_height = 0
-    for img in images:
-        result.paste(img, (0, current_height))
-        current_height += img.height
-
-    # Save the result image
-    result.save(output_path)
 
 
 def server(input: Inputs, output: Outputs, session: Session):
@@ -312,6 +291,7 @@ def server(input: Inputs, output: Outputs, session: Session):
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_umap():
         dataset_name = str(input.dataset())
+        umap_colors = input.umap_colors()
 
         if dataset_name == 'PBMC3k':
             pipeline = pipelines_info['PBMC3k']
@@ -326,11 +306,8 @@ def server(input: Inputs, output: Outputs, session: Session):
                 ui.notification_show('Figure has not been yet plotted.', type='error')
                 return
             else:
-                umap_plots_path = [os.path.join(f'figures/{pipeline.name}', path) for path in os.listdir(f'figures/{pipeline.name}') if path.split('-')[0] == 'umap']
-
-                combined_umap_plots_path = f'figures/{pipeline.name}/combined-umaps.png'
-                merge_umap_plots_vertically(image_paths=umap_plots_path, output_path=combined_umap_plots_path)
-                return ImgData(src=combined_umap_plots_path, height='auto', width='60%')
+                pipeline.plot_UMAP(use_raw=False, colors=umap_colors, is_after_clustering=False)
+                return ImgData(src=pipeline.umap_url, height='auto', width='60%')
 
 
     @output
@@ -421,10 +398,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
                 pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells'] = pipeline
 
-            # req(input.colors())
 
-            umap_colors = input.umap_colors()
-            print("Colors:", umap_colors)
 
             t0 = datetime.now()
 
@@ -434,9 +408,10 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             elapsed_time = (t1 - t0).total_seconds()
 
-            # ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!', type='message')
-            ui.notification_show(f'Colors: {umap_colors}', type='message')
+            ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!',
+                                 type='message', id='success_message',
+                                 action=ui.HTML('<script>release_buttons();</script>'))
 
 
 app = App(app_ui, server)
-# app.run()
+app.run()

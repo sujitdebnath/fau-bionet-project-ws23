@@ -6,7 +6,7 @@ from PIL import Image
 from datetime import datetime
 
 app_ui = ui.page_fluid(
-    # ui.head_content(ui.include_js("js/main.js", method="inline")),
+    ui.head_content(ui.include_js("js/main.js", method="inline")),
 
     ui.h1("BioNet Project"),
     ui.p("Created by Farzam"),
@@ -32,7 +32,7 @@ app_ui = ui.page_fluid(
                 },
             ),
 
-            ui.input_action_button("run", "Begin Analysis", class_="btn-success"),
+            ui.input_action_button("run", "Begin Analysis", class_="btn-success", onclick='freeze_buttons();'),
             ui.input_action_button("plot_figures", "Plot Figures", class_="btn-primary"),
             width=2,
         ),
@@ -421,9 +421,8 @@ def server(input: Inputs, output: Outputs, session: Session):
 
                 pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells'] = pipeline
 
-            # req(input.colors())
-
             umap_colors = input.umap_colors()
+
             print("Colors:", umap_colors)
 
             t0 = datetime.now()
@@ -434,9 +433,11 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             elapsed_time = (t1 - t0).total_seconds()
 
-            # ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!', type='message')
-            ui.notification_show(f'Colors: {umap_colors}', type='message')
+            ui.include_js('js/release_buttons.js')
+
+            ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!', type='message', id='success_message')
+            # ui.notification_show(f'Colors: {umap_colors}', type='message')
 
 
 app = App(app_ui, server)
-# app.run()
+app.run()

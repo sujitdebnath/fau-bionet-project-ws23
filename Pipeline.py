@@ -1,6 +1,29 @@
 import os.path
 import scanpy as sc
 import matplotlib.pyplot as plt
+from PIL import Image
+
+
+def merge_umap_plots_vertically(image_paths, output_path):
+    images = [Image.open(path) for path in image_paths]
+
+    # Get the maximum width among all images
+    max_width = max(img.width for img in images)
+
+    # Calculate the total height by summing individual image heights
+    total_height = sum(img.height for img in images)
+
+    # Create a new image with the maximum width and total height
+    result = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+
+    # Paste each image onto the result image
+    current_height = 0
+    for img in images:
+        result.paste(img, (0, current_height))
+        current_height += img.height
+
+    # Save the result image
+    result.save(output_path)
 
 
 class Pipeline:
@@ -8,8 +31,7 @@ class Pipeline:
         self.verbosity_lv = verbosity_lv
         self.source_file_path = source_file_path
         self.name = name
-        # self.umap_colors = umap_colors
-        self.result_file_path = f'write/{self.name}.h5ad'
+        self.result_file_path = f'write/{self.name}/data.h5ad'
         self._set_settings()
         self._load_data()
 
@@ -43,7 +65,7 @@ class Pipeline:
         plt.clf()
         sc.pl.highest_expr_genes(self.adata, n_top=20, show=False)
         # plt.title(f'Highest Expressed Genes in {self.name}')
-        file_name = f'highest_expr_genes-{self.name}.png'
+        file_name = f'highest_expr_genes.png'
         self.highest_expr_genes_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.highest_expr_genes_url)
 
@@ -51,8 +73,7 @@ class Pipeline:
         plt.clf()
         sc.pp.highly_variable_genes(self.adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
         sc.pl.highly_variable_genes(self.adata, show=False)
-        # plt.title(f'Highly Variable Genes in {self.name}')
-        file_name = f'highly_variable_genes-{self.name}.png'
+        file_name = f'highly_variable_genes.png'
         self.highly_variable_genes_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.highly_variable_genes_url)
 
@@ -67,15 +88,13 @@ class Pipeline:
     def _plot_scatter_adata(self):
         plt.clf()
         sc.pl.scatter(self.adata, x='total_counts', y='pct_counts_mt', show=False)
-        # plt.title(f'PCT Counts (MT) in {self.name}')
-        file_name = f'pct_counts_mt-{self.name}.png'
+        file_name = f'pct_counts_mt.png'
         self.pct_counts_mt_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.pct_counts_mt_url)
 
         plt.clf()
         sc.pl.scatter(self.adata, x='total_counts', y='n_genes_by_counts', show=False)
-        # plt.title(f'Number of Genes by Count in {self.name}')
-        file_name = f'n_genes_by_counts-{self.name}.png'
+        file_name = f'n_genes_by_counts.png'
         self.n_genes_by_counts_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.n_genes_by_counts_url)
 
@@ -100,16 +119,14 @@ class Pipeline:
     def _plot_pca(self):
         plt.clf()
         sc.pl.pca(self.adata, color='CST3', show=False)
-        # plt.title(f'PCA in {self.name}')
-        file_name = f'pca-{self.name}.png'
+        file_name = f'pca.png'
         self.pca_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.pca_url)
 
     def _plot_pca_variance_ration(self):
         plt.clf()
         sc.pl.pca_variance_ratio(self.adata, log=True, show=False)
-        # plt.title(f'PCA Variance in {self.name}')
-        file_name = f'pca_variance-{self.name}.png'
+        file_name = f'pca_variance.png'
         self.pca_variance_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.pca_variance_url)
 
@@ -125,24 +142,30 @@ class Pipeline:
     def _compute_UMAP(self):
         sc.tl.umap(self.adata)
 
-    def _plot_UMAP(self, use_raw, colors, is_after_clustering=False):
-        plt.clf()
-        sc.pl.umap(self.adata, color=colors, use_raw=use_raw, show=False)
-        # plt.title(f'UMAP in {self.name}')
-        if is_after_clustering:
-            file_name = f'umap-{colors}-after-clustering-{self.name}.png'
-        else:
-            file_name = f'umap-{colors}-{self.name}.png'
+    def plot_UMAP(self, use_raw, colors, is_after_clustering=False):
+        umap_plots = []
+        umap_plots_paths = []
 
-        self.umap_url = f'figures/{self.name}/{file_name}'
-        plt.savefig(self.umap_url)
+        for c in colors:
+            plt.clf()
+            sc.pl.umap(self.adata, color=[c], use_raw=use_raw, show=False)
+            umapt = plt.gcf()
+            umap_plots.append(umapt)
+            file_name = f'umap-{c}.png'
+            plt.savefig(f'figures/{self.name}/{file_name}')
+            umap_plots_paths.append(f'figures/{self.name}/{file_name}')
+
+        output_umap_plots_path = f'figures/{self.name}/umap.jpg'
+
+        self.umap_url = output_umap_plots_path
+
+        merge_umap_plots_vertically(image_paths=umap_plots_paths, output_path=output_umap_plots_path)
 
     def _rank_gene_groups(self, n_genes, group_by='leiden', method='t-test'):
         plt.clf()
         sc.tl.rank_genes_groups(self.adata, groupby=group_by, method=method)
         sc.pl.rank_genes_groups(self.adata, n_genes=n_genes, sharey=False, show=False)
-        # plt.title(f'Rank Genes Group in {self.name}')
-        file_name = f'rank_genes_group_by-{group_by}-{method}-{self.name}.png'
+        file_name = f'rank_genes_group_by-{group_by}-{method}.png'
         self.rank_genes_groups_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.rank_genes_groups_url)
 
@@ -150,7 +173,7 @@ class Pipeline:
         plt.clf()
         sc.pl.rank_genes_groups_violin(self.adata, groups='0', n_genes=8, show=False)
         # plt.title(f'Rank Genes Group Violin in {self.name}')
-        file_name = f'rank_genes_groups_violin-{self.name}.png'
+        file_name = f'rank_genes_groups_violin.png'
         self.rank_genes_groups_violin_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.rank_genes_groups_violin_url)
 
@@ -182,16 +205,8 @@ class Pipeline:
         self._find_neighbours(n_neighbors=10, n_pcs=40)
 
         self._compute_UMAP()
-        
-        self._plot_UMAP(use_raw=False, colors=['CST3'])
-        self._plot_UMAP(use_raw=False, colors=['NKG7'])
-        self._plot_UMAP(use_raw=False, colors=['PPBP'])
 
         self._cluster()
-
-        self._plot_UMAP(use_raw=True, colors=['leiden'], is_after_clustering=True)
-        self._plot_UMAP(use_raw=True, colors=['CST3'], is_after_clustering=True)
-        self._plot_UMAP(use_raw=True, colors=['NKG7'], is_after_clustering=True)
 
         self._write_result_file()
 
