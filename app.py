@@ -1,10 +1,8 @@
-import pandas as pd
-from shiny import App, Inputs, Outputs, Session, reactive, render, ui
+from shiny import App, Inputs, Outputs, Session, reactive, render, ui, req
 from shiny.types import FileInfo, ImgData
 from Pipeline import Pipeline
 import os
 from PIL import Image
-import cv2
 from datetime import datetime
 
 app_ui = ui.page_fluid(
@@ -22,12 +20,23 @@ app_ui = ui.page_fluid(
                     ['WB Lysis Granulocytes 5p Introns 8kCells', 'PBMC3k'],
                 ),
             ),
+
+            ui.input_checkbox_group(
+                "umap_colors",
+                "Choose color(s) for UMAP plots:",
+                {
+                    "CST3": ui.span("CST3"),
+                    "NKG7": ui.span("NKG7"),
+                    "PPBP": ui.span("PPBP"),
+                    "leiden": ui.span("Leiden")
+                },
+            ),
+
             ui.input_action_button("run", "Begin Analysis", class_="btn-success"),
             ui.input_action_button("plot_figures", "Plot Figures", class_="btn-primary"),
             width=2,
         ),
         {'style': 'height: 1000px;'},
-
 
         ui.navset_tab(
             ui.nav(
@@ -90,10 +99,33 @@ app_ui = ui.page_fluid(
     ),
 )
 
+
 pipelines_info = {
     'PBMC3k': None,
     'WB_Lysis_Granulocytes_5p_Introns_8kCells': None
 }
+
+
+def merge_umap_plots_vertically(image_paths, output_path):
+    images = [Image.open(path) for path in image_paths]
+
+    # Get the maximum width among all images
+    max_width = max(img.width for img in images)
+
+    # Calculate the total height by summing individual image heights
+    total_height = sum(img.height for img in images)
+
+    # Create a new image with the maximum width and total height
+    result = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+
+    # Paste each image onto the result image
+    current_height = 0
+    for img in images:
+        result.paste(img, (0, current_height))
+        current_height += img.height
+
+    # Save the result image
+    result.save(output_path)
 
 
 def server(input: Inputs, output: Outputs, session: Session):
@@ -294,22 +326,11 @@ def server(input: Inputs, output: Outputs, session: Session):
                 ui.notification_show('Figure has not been yet plotted.', type='error')
                 return
             else:
-                umap_plots_path = [path for path in os.listdir(f'figures/{pipeline.name}') if path.split('-')[0] == 'umap']
-
-                print(umap_plots_path)
-
-                umap_plots = []
-
-                for path in umap_plots_path:
-                    umap_plots.append(cv2.imread(os.path.join(f'figures/{pipeline.name}', path)))
-
-                combined_umap_plot = cv2.vconcat(umap_plots)
+                umap_plots_path = [os.path.join(f'figures/{pipeline.name}', path) for path in os.listdir(f'figures/{pipeline.name}') if path.split('-')[0] == 'umap']
 
                 combined_umap_plots_path = f'figures/{pipeline.name}/combined-umaps.png'
-                cv2.imwrite(combined_umap_plots_path, combined_umap_plot)
-
+                merge_umap_plots_vertically(image_paths=umap_plots_path, output_path=combined_umap_plots_path)
                 return ImgData(src=combined_umap_plots_path, height='auto', width='60%')
-
 
 
     @output
@@ -400,6 +421,11 @@ def server(input: Inputs, output: Outputs, session: Session):
 
                 pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells'] = pipeline
 
+            # req(input.colors())
+
+            umap_colors = input.umap_colors()
+            print("Colors:", umap_colors)
+
             t0 = datetime.now()
 
             pipeline.run()
@@ -408,8 +434,9 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             elapsed_time = (t1 - t0).total_seconds()
 
-            ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!', type='message')
+            # ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!', type='message')
+            ui.notification_show(f'Colors: {umap_colors}', type='message')
 
 
 app = App(app_ui, server)
-app.run()
+# app.run()

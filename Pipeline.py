@@ -1,10 +1,6 @@
 import os.path
-
-import numpy as np
-import pandas as pd
 import scanpy as sc
 import matplotlib.pyplot as plt
-import shutil
 
 
 class Pipeline:
@@ -12,6 +8,7 @@ class Pipeline:
         self.verbosity_lv = verbosity_lv
         self.source_file_path = source_file_path
         self.name = name
+        # self.umap_colors = umap_colors
         self.result_file_path = f'write/{self.name}.h5ad'
         self._set_settings()
         self._load_data()
@@ -37,7 +34,8 @@ class Pipeline:
         adata = sc.read_10x_mtx(
             self.source_file_path,  # the directory with the `.mtx` file
             var_names='gene_symbols',  # use gene symbols for the variable names (variables-axis index)
-            cache=True)
+            cache=True
+        )
 
         self.adata = adata
 
@@ -184,8 +182,8 @@ class Pipeline:
         self._find_neighbours(n_neighbors=10, n_pcs=40)
 
         self._compute_UMAP()
-
-        self._plot_UMAP(use_raw=False, colors=['CST3', ])
+        
+        self._plot_UMAP(use_raw=False, colors=['CST3'])
         self._plot_UMAP(use_raw=False, colors=['NKG7'])
         self._plot_UMAP(use_raw=False, colors=['PPBP'])
 
