@@ -27,16 +27,15 @@ def merge_umap_plots_vertically(image_paths, output_path):
 
 
 class Pipeline:
-    def __init__(self, verbosity_lv, source_file_path, name, n_most_expr_genes,
-                 min_num_genes_for_filtering, min_num_cells_for_filtering):
+    def __init__(self, verbosity_lv, source_file_path, name,
+                 min_num_genes_for_filtering, min_num_cells_for_filtering, num_neighbours, num_pcs):
         self.verbosity_lv = verbosity_lv
         self.source_file_path = source_file_path
         self.name = name
-        self.n_most_expr_genes = n_most_expr_genes
         self.min_num_genes_for_filtering = min_num_genes_for_filtering
         self.min_num_cells_for_filtering = min_num_cells_for_filtering
-        # self.n_neighbors = n_neighbors
-        # self.n_pcs = n_pcs
+        self.num_neighbours = num_neighbours
+        self.num_pcs = num_pcs
         self.result_file_path = f'write/{self.name}/data.h5ad'
         self._set_settings()
         self._load_data()
@@ -66,13 +65,14 @@ class Pipeline:
         )
 
         self.adata = adata
+        self.raw_adata = self.adata.copy()
 
-    def _plot_highest_expr_genes(self):
+    def plot_highest_expr_genes(self, n_most_expr_genes):
         plt.clf()
-        sc.pl.highest_expr_genes(self.adata, n_top=self.n_most_expr_genes, show=False)
+        sc.pl.highest_expr_genes(self.raw_adata, n_top=n_most_expr_genes, show=False)
         file_name = f'highest_expr_genes.png'
         self.highest_expr_genes_url = f'figures/{self.name}/{file_name}'
-        plt.title(f'Top {self.n_most_expr_genes} Expressed Genes')
+        plt.title(f'Top {n_most_expr_genes} Expressed Genes')
         plt.savefig(self.highest_expr_genes_url)
 
     def _plot_highly_variable_genes(self):
@@ -148,7 +148,7 @@ class Pipeline:
     def _compute_umap(self):
         sc.tl.umap(self.adata)
 
-    def _plot_umap(self, use_raw, colors, is_after_clustering=False):
+    def plot_umap(self, use_raw, colors, is_after_clustering=False):
         umap_plots = []
         umap_plots_paths = []
 
@@ -183,8 +183,6 @@ class Pipeline:
         plt.savefig(self.rank_genes_groups_violin_url)
 
     def run(self):
-        self._plot_highest_expr_genes()
-
         self._preprocessing()
 
         self._plot_scatter_adata()

@@ -1,13 +1,13 @@
-import matplotlib.pyplot as plt
 from shiny import App, Inputs, Outputs, Session, reactive, render, ui, req
 from shiny.types import FileInfo, ImgData
 from Pipeline import Pipeline
-import os
-from PIL import Image
 from datetime import datetime
 
 app_ui = ui.page_fluid(
-    ui.head_content(ui.include_js("js/main.js", method="inline")),
+    ui.head_content(ui.include_js("assets/js/main.js", method="inline"),
+                    ui.include_js("assets/js/bootstrap.bundle.min.js", method="inline"),
+                    ui.include_css("assets/css/main.css", method="inline"),
+                    ui.include_css("assets/css/bootstrap.min.css", method="inline"),),
 
     ui.output_ui('show_welcome_modal'),
     ui.h1("BioNet Project"),
@@ -21,7 +21,7 @@ app_ui = ui.page_fluid(
                 ui.input_select(
                     "dataset",
                     "Choose a dataset:",
-                    ['WB Lysis Granulocytes 5p Introns 8kCells', 'PBMC3k'],
+                    ['PBMC3k', 'WB Lysis Granulocytes 5p Introns 8kCells'],
                 )
             ),
 
@@ -29,11 +29,16 @@ app_ui = ui.page_fluid(
 
             ui.input_slider("min_cells", "Minimum Cells for Filtering", min=1, max=1000, value=200),
 
+            ui.input_slider("num_neighbours", "Number of neighbours to compute neighborhood graph",
+                            min=5, max=50, value=10),
+            ui.input_slider("num_pcs", "Number of PC(s) to compute neighborhood graph",
+                            min=5, max=50, value=40),
+
             ui.br(),
 
-            ui.input_action_button("run", "Begin Analysis", class_="btn-success", onclick='freeze_buttons();'),
+            ui.input_action_button("run", "Begin Analysis", class_="btn-success"),
 
-            ui.HTML('<hr width="100%;" color="blue" size="8">'),
+            ui.HTML('<hr width="100%;" color="black" size="8">'),
 
             ui.h5('Configurations for Plotting'),
 
@@ -50,11 +55,6 @@ app_ui = ui.page_fluid(
                 }, selected=['CST3', 'NKG7', 'PPBP', 'leiden']
             ),
 
-            # ui.input_slider("num_neighbours", "Number of neighbours to compute neighborhood graph",
-            #                 min=5, max=50, value=10),
-            # ui.input_slider("num_pcs", "Number of PC(s) to compute neighborhood graph",
-            #                 min=5, max=50, value=40),
-
             ui.input_action_button("plot_figures", "Plot Figures", class_="btn-primary"),
 
             width=2,
@@ -67,7 +67,7 @@ app_ui = ui.page_fluid(
                 ui.row(
                     ui.column(6, ui.output_image('plot_highest_expressed_genes')),
                     ui.column(6, ui.output_ui('desc_highest_expressed_genes'))),
-                ),
+            ),
 
             ui.nav("Highly Variable Genes",
                    ui.row(
@@ -122,11 +122,14 @@ app_ui = ui.page_fluid(
     ),
 )
 
+pipelines = []
 
-pipelines_info = {
-    'PBMC3k': None,
-    'WB_Lysis_Granulocytes_5p_Introns_8kCells': None
-}
+
+def check_if_pipeline_exists(pipeline_name, min_genes, min_cells, n_neighbours, n_pcs):
+    for pipeline in pipelines:
+        if pipeline.name == pipeline_name and pipeline.min_num_genes_for_filtering == min_genes and pipeline.min_num_cells_for_filtering == min_cells and pipeline.num_neighbours == n_neighbours and pipeline.num_pcs == n_pcs:
+            return pipeline
+    return None
 
 
 def server(input: Inputs, output: Outputs, session: Session):
@@ -152,21 +155,22 @@ def server(input: Inputs, output: Outputs, session: Session):
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_highest_expressed_genes():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
+        n_most_expr_genes = input.most_expr_genes()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
-            ui.notification_show('Please first run analysis on the selected dataset.', type='error')
-
+            ui.notification_show('Please first run analysis on the selected dataset with the given configuration.',
+                                 type='error')
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.highest_expr_genes_url, height='auto', width='100%')
+            pipeline.plot_highest_expr_genes(n_most_expr_genes=n_most_expr_genes)
+            return ImgData(src=pipeline.highest_expr_genes_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -179,22 +183,20 @@ def server(input: Inputs, output: Outputs, session: Session):
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_highly_variable_genes():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.highly_variable_genes_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.highly_variable_genes_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -202,28 +204,25 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_pct_count():
         return ui.markdown("### Hi, this is a sample description for pct_count!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_pct_count():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.pct_counts_mt_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.pct_counts_mt_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -231,28 +230,25 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_num_of_genes_by_count():
         return ui.markdown("### Hi, this is a sample description for num_of_genes_by_count!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_num_of_genes_by_count():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.n_genes_by_counts_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.n_genes_by_counts_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -260,28 +256,25 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_pca():
         return ui.markdown("### Hi, this is a sample description for pca!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_pca():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.pca_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.pca_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -289,28 +282,25 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_pca_variance():
         return ui.markdown("### Hi, this is a sample description for pca_variance!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_pca_variance():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.pca_variance_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.pca_variance_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -318,30 +308,27 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_umap():
         return ui.markdown("### Hi, this is a sample description for umap!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_umap():
         dataset_name = str(input.dataset())
         umap_colors = input.umap_colors()
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
             ui.notification_show('Please first run analysis on the selected dataset.', type='error')
 
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                pipeline.plot_UMAP(use_raw=False, colors=umap_colors, is_after_clustering=False)
-                return ImgData(src=pipeline.umap_url, height='auto', width='60%')
-
+            pipeline.plot_umap(use_raw=False, colors=umap_colors, is_after_clustering=False)
+            return ImgData(src=pipeline.umap_url, height='auto', width='60%')
 
     @output
     @render.ui
@@ -349,28 +336,24 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_rank_genes_group():
         return ui.markdown("### Hi, this is a sample description rank genes group!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_rank_genes_group():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
-            ui.notification_show('Please first run analysis on the selected dataset.', type='error')
-
+                ui.notification_show('Please first run analysis on the selected dataset.', type='error')
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.rank_genes_groups_url, height='auto', width='100%')
-
+            return ImgData(src=pipeline.rank_genes_groups_url, height='auto', width='100%')
 
     @output
     @render.ui
@@ -378,65 +361,64 @@ def server(input: Inputs, output: Outputs, session: Session):
     def desc_rank_genes_group_violin():
         return ui.markdown("### Hi, this is a sample description for rank genes group violin!")
 
-
     @output
     @render.image
     @reactive.event(input.plot_figures, ignore_none=True)
     def plot_rank_genes_group_violin():
         dataset_name = str(input.dataset())
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is None:
-            ui.notification_show('Please first run analysis on the selected dataset.', type='error')
-
+                ui.notification_show('Please first run analysis on the selected dataset.', type='error')
         else:
-            if pipeline.highest_expr_genes_url is None:
-                ui.notification_show('Figure has not been yet plotted.', type='error')
-                return
-            else:
-                return ImgData(src=pipeline.rank_genes_groups_violin_url, height='auto', width='100%')
+            return ImgData(src=pipeline.rank_genes_groups_violin_url, height='auto', width='100%')
 
     @output
     @render.ui
     @reactive.event(input.run, ignore_none=True)
     def run_pipeline():
         dataset_name = str(input.dataset())
-        n_most_expr_genes = input.most_expr_genes()
         min_num_genes_for_filtering = input.min_genes()
         min_num_cells_for_filtering = input.min_cells()
+        num_neighbours = input.num_neighbours()
+        num_pcs = input.num_pcs()
 
-        if dataset_name == 'PBMC3k':
-            pipeline = pipelines_info['PBMC3k']
-        elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
-            pipeline = pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells']
+        pipeline = check_if_pipeline_exists(pipeline_name=dataset_name, min_genes=min_num_genes_for_filtering,
+                                            min_cells=min_num_cells_for_filtering, n_neighbours=num_neighbours,
+                                            n_pcs=num_pcs)
 
         if pipeline is not None:
             ui.notification_show('Analysis is already done previously. Try to plot the figures.', type='warning')
 
         else:
-            ui.notification_show(f'Analysis has started!', type='message')
+            ui.notification_show(f'Analysis has started!', type='message',
+                                 action=ui.HTML('<script>freeze_buttons();</script>'))
 
             if dataset_name == 'PBMC3k':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/filtered_gene_bc_matrices/hg19',
-                                    name='PBMC3k', n_most_expr_genes=n_most_expr_genes,
+                                    name='PBMC3k',
                                     min_num_genes_for_filtering=min_num_genes_for_filtering,
-                                    min_num_cells_for_filtering=min_num_cells_for_filtering)
+                                    min_num_cells_for_filtering=min_num_cells_for_filtering,
+                                    num_neighbours=num_neighbours, num_pcs=num_pcs)
 
-                pipelines_info['PBMC3k'] = pipeline
 
             elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/WB_Lysis_Granulocytes_5p_Introns_8kCells_filtered_feature_bc_matrix/filtered_feature_bc_matrix',
-                                    name='WB-Lysis', n_most_expr_genes=n_most_expr_genes,
+                                    name='WB-Lysis',
                                     min_num_genes_for_filtering=min_num_genes_for_filtering,
-                                    min_num_cells_for_filtering=min_num_cells_for_filtering)
+                                    min_num_cells_for_filtering=min_num_cells_for_filtering,
+                                    num_neighbours=num_neighbours, num_pcs=num_pcs)
 
-                pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells'] = pipeline
+            pipelines.append(pipeline)
 
             t0 = datetime.now()
 
@@ -448,8 +430,8 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!',
                                  type='message', id='success_message',
-                                 action=ui.HTML('<script>release_buttons();</script>'))
+                                 action=ui.HTML('<script>release_buttons(); auto_plot();</script>'))
 
 
 app = App(app_ui, server)
-# app.run()
+app.run()
