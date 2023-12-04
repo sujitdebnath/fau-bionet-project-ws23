@@ -11,7 +11,7 @@ cache/
 figures/
 write/
 rsconnect-python/
-
+__pycache__/
 
 # Distribution / packaging
 .Python
