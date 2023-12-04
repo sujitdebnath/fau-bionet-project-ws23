@@ -9,18 +9,35 @@ from datetime import datetime
 app_ui = ui.page_fluid(
     ui.head_content(ui.include_js("js/main.js", method="inline")),
 
+    ui.output_ui('show_welcome_modal'),
     ui.h1("BioNet Project"),
     ui.p("Created by Farzam"),
 
     ui.layout_sidebar(
         ui.panel_sidebar(
+            ui.h5('Configurations for Analysis'),
+
             ui.row(
                 ui.input_select(
                     "dataset",
                     "Choose a dataset:",
                     ['WB Lysis Granulocytes 5p Introns 8kCells', 'PBMC3k'],
-                ),
+                )
             ),
+
+            ui.input_slider("min_genes", "Minimum Genes for Filtering", min=1, max=100, value=3),
+
+            ui.input_slider("min_cells", "Minimum Cells for Filtering", min=1, max=1000, value=200),
+
+            ui.br(),
+
+            ui.input_action_button("run", "Begin Analysis", class_="btn-success", onclick='freeze_buttons();'),
+
+            ui.HTML('<hr width="100%;" color="blue" size="8">'),
+
+            ui.h5('Configurations for Plotting'),
+
+            ui.input_slider("most_expr_genes", "Most expressed genes to plot", min=5, max=100, value=20),
 
             ui.input_checkbox_group(
                 "umap_colors",
@@ -30,11 +47,16 @@ app_ui = ui.page_fluid(
                     "NKG7": ui.span("NKG7"),
                     "PPBP": ui.span("PPBP"),
                     "leiden": ui.span("Leiden")
-                },
+                }, selected=['CST3', 'NKG7', 'PPBP', 'leiden']
             ),
 
-            ui.input_action_button("run", "Begin Analysis", class_="btn-success", onclick='freeze_buttons();'),
+            # ui.input_slider("num_neighbours", "Number of neighbours to compute neighborhood graph",
+            #                 min=5, max=50, value=10),
+            # ui.input_slider("num_pcs", "Number of PC(s) to compute neighborhood graph",
+            #                 min=5, max=50, value=40),
+
             ui.input_action_button("plot_figures", "Plot Figures", class_="btn-primary"),
+
             width=2,
         ),
         {'style': 'height: 1000px;'},
@@ -108,6 +130,17 @@ pipelines_info = {
 
 
 def server(input: Inputs, output: Outputs, session: Session):
+    @output
+    @render.ui
+    def show_welcome_modal():
+        m = ui.modal(
+            "In this project, I tried to perform sc-RNA data analysis of the selected datasets. This is a under-development project and thus, it's done fully done. Thank you.",
+            title="Welcome to the Project Biomedical Network Science!",
+            easy_close=True,
+            footer='Farzam',
+        )
+        return ui.modal_show(m)
+
     @output
     @render.ui
     @reactive.event(input.plot_figures, ignore_none=True)
@@ -372,6 +405,9 @@ def server(input: Inputs, output: Outputs, session: Session):
     @reactive.event(input.run, ignore_none=True)
     def run_pipeline():
         dataset_name = str(input.dataset())
+        n_most_expr_genes = input.most_expr_genes()
+        min_num_genes_for_filtering = input.min_genes()
+        min_num_cells_for_filtering = input.min_cells()
 
         if dataset_name == 'PBMC3k':
             pipeline = pipelines_info['PBMC3k']
@@ -387,18 +423,20 @@ def server(input: Inputs, output: Outputs, session: Session):
             if dataset_name == 'PBMC3k':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/filtered_gene_bc_matrices/hg19',
-                                    name='PBMC3k')
+                                    name='PBMC3k', n_most_expr_genes=n_most_expr_genes,
+                                    min_num_genes_for_filtering=min_num_genes_for_filtering,
+                                    min_num_cells_for_filtering=min_num_cells_for_filtering)
 
                 pipelines_info['PBMC3k'] = pipeline
 
             elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/WB_Lysis_Granulocytes_5p_Introns_8kCells_filtered_feature_bc_matrix/filtered_feature_bc_matrix',
-                                    name='WB-Lysis')
+                                    name='WB-Lysis', n_most_expr_genes=n_most_expr_genes,
+                                    min_num_genes_for_filtering=min_num_genes_for_filtering,
+                                    min_num_cells_for_filtering=min_num_cells_for_filtering)
 
                 pipelines_info['WB_Lysis_Granulocytes_5p_Introns_8kCells'] = pipeline
-
-
 
             t0 = datetime.now()
 
@@ -414,4 +452,4 @@ def server(input: Inputs, output: Outputs, session: Session):
 
 
 app = App(app_ui, server)
-app.run()
+# app.run()

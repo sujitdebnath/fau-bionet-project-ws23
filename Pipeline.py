@@ -27,10 +27,16 @@ def merge_umap_plots_vertically(image_paths, output_path):
 
 
 class Pipeline:
-    def __init__(self, verbosity_lv, source_file_path, name):
+    def __init__(self, verbosity_lv, source_file_path, name, n_most_expr_genes,
+                 min_num_genes_for_filtering, min_num_cells_for_filtering):
         self.verbosity_lv = verbosity_lv
         self.source_file_path = source_file_path
         self.name = name
+        self.n_most_expr_genes = n_most_expr_genes
+        self.min_num_genes_for_filtering = min_num_genes_for_filtering
+        self.min_num_cells_for_filtering = min_num_cells_for_filtering
+        # self.n_neighbors = n_neighbors
+        # self.n_pcs = n_pcs
         self.result_file_path = f'write/{self.name}/data.h5ad'
         self._set_settings()
         self._load_data()
@@ -63,10 +69,10 @@ class Pipeline:
 
     def _plot_highest_expr_genes(self):
         plt.clf()
-        sc.pl.highest_expr_genes(self.adata, n_top=20, show=False)
-        # plt.title(f'Highest Expressed Genes in {self.name}')
+        sc.pl.highest_expr_genes(self.adata, n_top=self.n_most_expr_genes, show=False)
         file_name = f'highest_expr_genes.png'
         self.highest_expr_genes_url = f'figures/{self.name}/{file_name}'
+        plt.title(f'Top {self.n_most_expr_genes} Expressed Genes')
         plt.savefig(self.highest_expr_genes_url)
 
     def _plot_highly_variable_genes(self):
@@ -78,8 +84,8 @@ class Pipeline:
         plt.savefig(self.highly_variable_genes_url)
 
     def _preprocessing(self):
-        sc.pp.filter_cells(self.adata, min_genes=200)
-        sc.pp.filter_genes(self.adata, min_cells=3)
+        sc.pp.filter_cells(self.adata, min_genes=self.min_num_cells_for_filtering)
+        sc.pp.filter_genes(self.adata, min_cells=self.min_num_genes_for_filtering)
 
         self.adata.var['mt'] = self.adata.var_names.str.startswith(
             'MT-')  # annotate the group of mitochondrial genes as 'mt'
@@ -133,24 +139,24 @@ class Pipeline:
     def _write_result_file(self):
         self.adata.write(self.result_file_path)
 
-    def _find_neighbours(self, n_neighbors, n_pcs):
-        sc.pp.neighbors(self.adata, n_neighbors=n_neighbors, n_pcs=n_pcs)
+    def _find_neighbours(self):
+        sc.pp.neighbors(self.adata, n_neighbors=10, n_pcs=40)
 
     def _cluster(self):
         sc.tl.leiden(self.adata)
 
-    def _compute_UMAP(self):
+    def _compute_umap(self):
         sc.tl.umap(self.adata)
 
-    def plot_UMAP(self, use_raw, colors, is_after_clustering=False):
+    def _plot_umap(self, use_raw, colors, is_after_clustering=False):
         umap_plots = []
         umap_plots_paths = []
 
         for c in colors:
             plt.clf()
             sc.pl.umap(self.adata, color=[c], use_raw=use_raw, show=False)
-            umapt = plt.gcf()
-            umap_plots.append(umapt)
+            umap_plot = plt.gcf()
+            umap_plots.append(umap_plot)
             file_name = f'umap-{c}.png'
             plt.savefig(f'figures/{self.name}/{file_name}')
             umap_plots_paths.append(f'figures/{self.name}/{file_name}')
@@ -172,7 +178,6 @@ class Pipeline:
     def _plot_violin_data(self):
         plt.clf()
         sc.pl.rank_genes_groups_violin(self.adata, groups='0', n_genes=8, show=False)
-        # plt.title(f'Rank Genes Group Violin in {self.name}')
         file_name = f'rank_genes_groups_violin.png'
         self.rank_genes_groups_violin_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.rank_genes_groups_violin_url)
@@ -202,9 +207,9 @@ class Pipeline:
 
         self._write_result_file()
 
-        self._find_neighbours(n_neighbors=10, n_pcs=40)
+        self._find_neighbours()
 
-        self._compute_UMAP()
+        self._compute_umap()
 
         self._cluster()
 
