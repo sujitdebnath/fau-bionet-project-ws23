@@ -461,7 +461,7 @@ def server(input: Inputs, output: Outputs, session: Session):
             if dataset_name == 'PBMC3k':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/filtered_gene_bc_matrices/hg19',
-                                    name='PBMC3k',
+                                    name=dataset_name,
                                     min_num_genes_for_filtering=min_num_genes_for_filtering,
                                     min_num_cells_for_filtering=min_num_cells_for_filtering,
                                     num_neighbours=num_neighbours, num_pcs=num_pcs)
@@ -469,7 +469,7 @@ def server(input: Inputs, output: Outputs, session: Session):
             elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/WB_Lysis_Granulocytes_5p_Introns_8kCells_filtered_feature_bc_matrix/filtered_feature_bc_matrix',
-                                    name='WB-Lysis',
+                                    name=dataset_name,
                                     min_num_genes_for_filtering=min_num_genes_for_filtering,
                                     min_num_cells_for_filtering=min_num_cells_for_filtering,
                                     num_neighbours=num_neighbours, num_pcs=num_pcs)
