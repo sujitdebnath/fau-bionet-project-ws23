@@ -4,6 +4,7 @@ from Pipeline import Pipeline
 from datetime import datetime
 
 app_ui = ui.page_fluid(
+    ui.HTML('<html data-bs-theme="dark">'),
     ui.head_content(ui.include_js("assets/js/main.js", method="inline"),
                     ui.include_js("assets/js/bootstrap.bundle.min.js", method="inline"),
                     ui.include_css("assets/css/main.css", method="inline"),
