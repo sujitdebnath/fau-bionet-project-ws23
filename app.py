@@ -7,11 +7,9 @@ app_ui = ui.page_fluid(
     ui.head_content(ui.include_js("assets/js/main.js", method="inline"),
                     ui.include_js("assets/js/bootstrap.bundle.min.js", method="inline"),
                     ui.include_css("assets/css/main.css", method="inline"),
-                    ui.include_css("assets/css/bootstrap.min.css", method="inline"),),
+                    ui.include_css("assets/css/bootstrap.min.css", method="inline"), ),
 
     ui.output_ui('show_welcome_modal'),
-    ui.h1("BioNet Project"),
-    ui.p("Created by Farzam"),
 
     ui.layout_sidebar(
         ui.panel_sidebar(
@@ -62,6 +60,11 @@ app_ui = ui.page_fluid(
         {'style': 'height: 1000px;'},
 
         ui.navset_tab(
+            ui.nav(
+                "Introduction",
+                ui.output_ui('desc_introduction'),
+            ),
+
             ui.nav(
                 "Highest Expressed Genes",
                 ui.row(
@@ -143,6 +146,59 @@ def server(input: Inputs, output: Outputs, session: Session):
             footer='Farzam',
         )
         return ui.modal_show(m)
+
+    @output
+    @render.ui
+    def desc_introduction():
+        return ui.HTML("""
+        <br>
+        <div class="container">
+            <div class='jumbotron'>
+                <h2> Welcome to BioNet </h1>
+                <p>This is a introduction to how to use this platform.
+                <br>
+                Basically, this platform's functions can be divided into 
+                three groups:
+                <br>
+                <ol>
+                    <li> Setting the hyperparameters
+                    <li> Creating pipeline for Analysis
+                    <li> Visualizing the plots
+                </ol>
+                
+                At the moment, this platform supports <b>only two</b> datasets. However, any dataset with a 10x format that can
+                be read with <code>sc.read_10x_mtx()</code> can be added.</p>
+                
+                <h3>First Step</h3>
+                <p>To start with, please <b>choose a dataset</b> from the top-left dropdown.
+                After selecting the dataset, please feel free to customize the hyperparameters as you wish.
+                When you are done with the parameters, click on the <span style='color: green'><b>Begin Analysis</b></span> button. In this step, two occurrences are possible:</p>
+                 
+                 <ul>
+                    <li> A pipeline will be created and will begin analyzing the data with the given parameters. (takes ~ 20 - 40 seconds)</li>
+                    <li> Already a pipeline is created, and the results instantly will be shown to you.</li>
+                 </ul>
+                 
+                 <p>In both cases, a pipeline has already been created and has analyzed the data. Thus, the results are now ready to be plotted. After the analysis are done, all plots will be shown automatically.</p>
+                 
+                 <h3>Second Step</h3>
+                 <p>On the top of this section you can find the navigation bar, in which different plots are grouped and shown. In every window, you will find the plot related to that topic and a brief description about the plot and its analysis.
+                 For example, you can learn about the <b>most expressed genes in the dataset</b> by clicking on the next window called <span style='color: red;'><b>Highest Expressed Genes</b></span>.</p>
+                 
+                 <h3>Third Step</h3>
+                 <p>Some paramerts are only related to plotting data, for example <b>Most Expressed Genes</b> to plot, or the color set for the <b>UMap</b>. You can twist these parameters in the left column in the <b>Configuration for Plotting</b> section.
+                 After any changes, click on the <span style='color: blue'><b>Plot Figures</b></span> to re-plot all the analysis in the desired format.
+                 Please be aware that changing these settings doesn't have to do anything with the analysis and you don't need to analyze the data again.</p>
+                 
+                 <br><br>
+                 <h5>Note:</h5>
+                 <p>This is a provisional version of this project and is still under development.<br>
+                 Latest update: 5/Dec/2023
+                 <br>
+                 Farzam</p>
+            </div>
+        </div>
+        """)
 
     @output
     @render.ui
@@ -351,7 +407,7 @@ def server(input: Inputs, output: Outputs, session: Session):
                                             n_pcs=num_pcs)
 
         if pipeline is None:
-                ui.notification_show('Please first run analysis on the selected dataset.', type='error')
+            ui.notification_show('Please first run analysis on the selected dataset.', type='error')
         else:
             return ImgData(src=pipeline.rank_genes_groups_url, height='auto', width='100%')
 
@@ -376,7 +432,7 @@ def server(input: Inputs, output: Outputs, session: Session):
                                             n_pcs=num_pcs)
 
         if pipeline is None:
-                ui.notification_show('Please first run analysis on the selected dataset.', type='error')
+            ui.notification_show('Please first run analysis on the selected dataset.', type='error')
         else:
             return ImgData(src=pipeline.rank_genes_groups_violin_url, height='auto', width='100%')
 
@@ -409,7 +465,6 @@ def server(input: Inputs, output: Outputs, session: Session):
                                     min_num_cells_for_filtering=min_num_cells_for_filtering,
                                     num_neighbours=num_neighbours, num_pcs=num_pcs)
 
-
             elif dataset_name == 'WB Lysis Granulocytes 5p Introns 8kCells':
                 pipeline = Pipeline(verbosity_lv=1,
                                     source_file_path='data/WB_Lysis_Granulocytes_5p_Introns_8kCells_filtered_feature_bc_matrix/filtered_feature_bc_matrix',
@@ -430,7 +485,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             ui.notification_show(f'Analysis is done in {round(elapsed_time, 3)} seconds!',
                                  type='message', id='success_message',
-                                 action=ui.HTML('<script>release_buttons(); auto_plot();</script>'))
+                                 action=ui.HTML('<script>release_buttons(); auto_plot(); goto_first_tab();</script>'))
 
 
 app = App(app_ui, server)

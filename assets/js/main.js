@@ -21,3 +21,15 @@ function auto_plot() {
 	document.getElementById("plot_figures").click();
 }
 
+function goto_first_tab() {
+	var navLinks = document.querySelectorAll('a.nav-link');
+
+	// Now you can loop through the navLinks NodeList and perform actions on each link
+	navLinks.forEach(function(link) {
+		// For example, you can log the text content of each link
+		if (link.textContent === "Highest Expressed Genes") {
+			link.click();
+		}
+	});
+}
+
