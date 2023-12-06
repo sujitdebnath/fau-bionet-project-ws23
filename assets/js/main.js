@@ -32,4 +32,3 @@ function goto_first_tab() {
 		}
 	});
 }
-

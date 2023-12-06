@@ -28,7 +28,8 @@ def merge_umap_plots_vertically(image_paths, output_path):
 
 class Pipeline:
     def __init__(self, verbosity_lv, source_file_path, name,
-                 min_num_genes_for_filtering, min_num_cells_for_filtering, num_neighbours, num_pcs):
+                 min_num_genes_for_filtering, min_num_cells_for_filtering,
+                 num_neighbours, num_pcs):
         self.verbosity_lv = verbosity_lv
         self.source_file_path = source_file_path
         self.name = name
@@ -87,22 +88,23 @@ class Pipeline:
         sc.pp.filter_cells(self.adata, min_genes=self.min_num_cells_for_filtering)
         sc.pp.filter_genes(self.adata, min_cells=self.min_num_genes_for_filtering)
 
-        self.adata.var['mt'] = self.adata.var_names.str.startswith(
-            'MT-')  # annotate the group of mitochondrial genes as 'mt'
+        self.adata.var['mt'] = (self.adata.var_names.str.startswith('MT-'))
         sc.pp.calculate_qc_metrics(self.adata, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
 
     def _plot_scatter_adata(self):
         plt.clf()
         sc.pl.scatter(self.adata, x='total_counts', y='pct_counts_mt', show=False)
-        file_name = f'pct_counts_mt.png'
-        self.pct_counts_mt_url = f'figures/{self.name}/{file_name}'
-        plt.savefig(self.pct_counts_mt_url)
+        plt.savefig(f'figures/{self.name}/pct_counts_mt.png')
 
         plt.clf()
         sc.pl.scatter(self.adata, x='total_counts', y='n_genes_by_counts', show=False)
-        file_name = f'n_genes_by_counts.png'
-        self.n_genes_by_counts_url = f'figures/{self.name}/{file_name}'
-        plt.savefig(self.n_genes_by_counts_url)
+        plt.savefig(f'figures/{self.name}/n_genes_by_counts.png')
+
+        merge_umap_plots_vertically(image_paths=[f'figures/{self.name}/pct_counts_mt.png',
+                                                 f'figures/{self.name}/n_genes_by_counts.png'],
+                                    output_path=f'figures/{self.name}/gene_pct_count.png')
+
+        self.gene_pct_count_url = f'figures/{self.name}/gene_pct_count.png'
 
     def _filter_data(self):
         self.adata = self.adata[self.adata.obs.n_genes_by_counts < 2500, :]
@@ -131,7 +133,7 @@ class Pipeline:
 
     def _plot_pca_variance_ration(self):
         plt.clf()
-        sc.pl.pca_variance_ratio(self.adata, log=True, show=False)
+        sc.pl.pca_variance_ratio(self.adata, log=False, show=False)
         file_name = f'pca_variance.png'
         self.pca_variance_url = f'figures/{self.name}/{file_name}'
         plt.savefig(self.pca_variance_url)
@@ -140,7 +142,7 @@ class Pipeline:
         self.adata.write(self.result_file_path)
 
     def _find_neighbours(self):
-        sc.pp.neighbors(self.adata, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(self.adata, n_neighbors=self.num_neighbours, n_pcs=self.num_pcs)
 
     def _cluster(self):
         sc.tl.leiden(self.adata)
