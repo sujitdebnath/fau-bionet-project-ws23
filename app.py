@@ -8,7 +8,8 @@ app_ui = ui.page_fluid(
     ui.head_content(ui.include_js("assets/js/main.js", method="inline"),
                     ui.include_js("assets/js/bootstrap.bundle.min.js", method="inline"),
                     ui.include_css("assets/css/main.css", method="inline"),
-                    ui.include_css("assets/css/bootstrap.min.css", method="inline"), ),
+                    ui.include_css("assets/css/bootstrap.min.css", method="inline"),
+                    ui.HTML('<link rel="icon" type="image/x-icon" href="https://www.bionets.tf.fau.de/files/2021/06/bionets_logo_rgb.png">')),
 
     ui.output_ui('show_welcome_modal'),
 
