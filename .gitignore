@@ -12,6 +12,17 @@ figures/
 write/
 rsconnect-python/
 __pycache__/
+data/
+
+# SCSA
+SCSA/
+
+# temp
+temp/
+
+# csv files
+*.csv
+
 
 # Distribution / packaging
 .Python
