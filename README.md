@@ -1,7 +1,19 @@
 # BioNet
+ 
+To run the code:
 
-ToDo:
+```bash
+git clone https://github.com/FarzamTP/BioNet.git
+cd BioNet
+python -m venv venv
+source venv/bin/activate
+pip install requirements.txt
+```
 
-- [X] Make most expressed genes a parameter to plot not a parameter to create pipeline with.
-- [ ] Create explanations
-- [ ] 
+### Running the Dash Application
+```bash
+cd WebApplication
+python3 dash_app.py
+```
+
+Then you can visit ```http://127.0.0.1:8050``` to open the application locally.

@@ -1,1 +1,0 @@
-web: shiny run -h 0.0.0.0 -p $PORT 
