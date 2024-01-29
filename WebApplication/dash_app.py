@@ -49,11 +49,7 @@ app.layout = dbc.Container([
                 [
                     html.H1("BioNet Project", style={'color': 'white', 'text-align': 'center'}),
                     html.Div([
-                        html.H2("Results for Differential Gene Analysis", style={'color': 'white', 'margin': '30px'}),
-                        html.P(
-                            'Note: This is a test over PBMCs datasets collected from three different donors. In the '
-                            'close future, it will be replaced with Case vs. Control datasets.',
-                            style={'color': 'white', 'margin': '30px'}),
+                        html.H2("Results for Differential Gene Analysis for MPN Disease", style={'color': 'white', 'margin': '30px'}),
                     ], style={'border-style': 'solid', 'border-color': 'red'}),
                 ],
                 width=12,
