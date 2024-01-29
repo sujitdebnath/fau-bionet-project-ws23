@@ -7,7 +7,7 @@ git clone https://github.com/FarzamTP/BioNet.git
 cd BioNet
 python -m venv venv
 source venv/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Running the Dash Application
