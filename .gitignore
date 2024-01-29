@@ -21,7 +21,6 @@ SCSA/
 temp/
 
 # csv files
-*.csv
 
 
 # Distribution / packaging
