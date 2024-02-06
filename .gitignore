@@ -21,7 +21,6 @@ SCSA/
 temp/
 
 # Generated csv files
-WebApplication/resulted_DEG_files/
 
 # Distribution / packaging
 .Python
