@@ -1,12 +1,17 @@
+import os
+
 from dash import Dash, html, dcc, Input, Output, no_update, callback
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import pandas as pd
+from dash.exceptions import PreventUpdate
 
-all_cell_DEG_df = pd.read_csv("DEG_All.csv")
-specific_cell_DEG_df = pd.read_csv("DEG_T cell.csv")
+# all_cell_DEG_df = pd.read_csv("DEG_All.csv")
+# specific_cell_DEG_df = pd.read_csv("DEG_T cell.csv")
 
-app = Dash(__name__, serve_locally=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], serve_locally=True)
+
+dataset_files = [file_name.replace('.csv', '') for file_name in os.listdir('./resulted_DEG_files')]
 
 columnDefs = [
     {"field": "Gene", 'text-align': 'center'},
@@ -18,13 +23,13 @@ columnDefs = [
     {"field": "LFC", "filter": "agNumberColumnFilter", 'text-align': 'center'},
 ]
 
-all_DEG_grid = dag.AgGrid(
+first_table_grid = dag.AgGrid(
     className="ag-theme-alpine-dark",
-    id="all_cell_DEG_grid",
-    rowData=all_cell_DEG_df.to_dict("records"),
+    id="first_table_grid",
+    rowData=None,
     columnDefs=columnDefs,
-    defaultColDef={"resizable": True, "sortable": True, "filter": True, "Width": 125, },
-    columnSize="sizeToFit",
+    defaultColDef={"resizable": True, "sortable": True, "filter": True, "Width": 125},
+    columnSize="autoSize",
     # dashGridOptions={"pagination": True, 'paginationPageSize': 12, "domLayout": "autoHeight"},
     dashGridOptions={"pagination": True, 'AutoPaginationPageSize': True},
     style={"height": 600}
@@ -32,14 +37,14 @@ all_DEG_grid = dag.AgGrid(
 
 specific_cell_DEG_grid = dag.AgGrid(
     className="ag-theme-alpine-dark",
-    id="specific_cell_DEG_grid",
-    rowData=specific_cell_DEG_df.to_dict("records"),
+    id="second_table_grid",
+    rowData=None,
     columnDefs=columnDefs,
     defaultColDef={"resizable": True, "sortable": True, "filter": True, "Width": 125, },
-    columnSize="sizeToFit",
+    columnSize="autoSize",
     # dashGridOptions={"pagination": True, 'paginationPageSize': 12, "domLayout": "autoHeight"},
     dashGridOptions={"pagination": True, 'AutoPaginationPageSize': True},
-    style={"height": 600}
+    style={"height": 600},
 )
 
 app.layout = dbc.Container([
@@ -49,70 +54,68 @@ app.layout = dbc.Container([
                 [
                     html.H1("BioNet Project", style={'color': 'white', 'text-align': 'center'}),
                     html.Div([
-                        html.H2("Results for Differential Gene Analysis for MPN Disease", style={'color': 'white', 'margin': '30px'}),
+                        html.H3("Results for Differential Gene Analysis for MPN Disease",
+                                style={'color': 'white', 'margin': '30px'}),
                     ], style={'border-style': 'solid', 'border-color': 'red'}),
                 ],
                 width=12,
-                style={"width": "100%"}
             ),
         ],
-        style={"margin": 50}
+        style={"margin": 30}
     ),
 
     dbc.Row([
         dbc.Col([
-            html.H1("DEG without Cell Specification", style={'color': 'white'}),
-            html.H2("Go to page:", style={'color': 'white'}),
-            dcc.Input(id="all_cell_goto-page-input", type="number", style={'font-size': 'large'}),
+            html.H4("First Dataset:", style={'color': 'white'}),
+            dcc.Dropdown(dataset_files, value=dataset_files[0], id='first_table_dropdown'),
+            html.Br(),
+            html.H6("Go to page:", style={'color': 'white'}),
+            dcc.Input(id="first_table_page_input", type="number", style={'font-size': 'large'}, value=1),
             html.Br(),
             html.Br(),
-            all_DEG_grid,
+            first_table_grid,
         ],
-            width=12,
-            style={"margin": 50})
-    ]),
+            width=6,
+            style={"margin": 50, 'width': 500}),
 
-    dbc.Row([
         dbc.Col([
-            html.H1("DEG with Cell Specification", style={'color': 'white'}),
-            html.H2("Go to page:", style={'color': 'white'}),
-            dcc.Input(id="specific_cell_goto-page-input", type="number", style={'font-size': 'large'}),
+            html.H4("Second Dataset:", style={'color': 'white'}),
+            dcc.Dropdown(dataset_files, value=dataset_files[1], id='second_table_dropdown'),
+            html.Br(),
+            html.H6("Go to page:", style={'color': 'white'}),
+            dcc.Input(id="second_table_goto_page_input", type="number", style={'font-size': 'large'}, value=1),
             html.Br(),
             html.Br(),
             specific_cell_DEG_grid,
         ],
-            width=12,
-            style={"margin": 50})
+            width=6,
+            style={"margin": 50, 'width': 500}),
+
     ]),
-
-#    dbc.Row(
-#        [
-#            dbc.Col(
-#                [
-#                    html.Img(src='assets/figures/X_mdeSCSA_cellType_annotation.png', style={'width': '44%'}),
-#                    html.Img(src='assets/figures/tracksplotrank_genes_group_per_donor.png', style={'width': '45%'}),
-#                ]),
-#        ],
-#        style={"margin": 50, 'text-align': 'center'}
-#    ),
-#
-#    dbc.Row(
-#        [
-#            dbc.Col(
-#                [
-#                    html.Img(src='assets/figures/X_mdeDonor_cells.png', style={"width": "30%"}),
-#                    html.Img(src='assets/figures/CellType_Donor_ratio.png', style={"width": "30%"}),
-#                ])
-#        ],
-#        style={"margin": 50, 'text-align': 'center'}
-#    ),
-
 ])
 
 
 @callback(
-    Output("all_cell_DEG_grid", "paginationGoTo"),
-    Input("all_cell_goto-page-input", "value"),
+    Output('first_table_grid', 'rowData'),
+    Input('first_table_dropdown', 'value')
+)
+def update_first_table(value):
+    first_dataset = pd.read_csv(f'./resulted_DEG_files/{str(value)}.csv')
+    return first_dataset.to_dict("records")
+
+
+@callback(
+    Output('second_table_grid', 'rowData'),
+    Input('second_table_dropdown', 'value')
+)
+def update_first_table(value):
+    first_dataset = pd.read_csv(f'./resulted_DEG_files/{str(value)}.csv')
+    return first_dataset.to_dict("records")
+
+
+@callback(
+    Output("first_table_grid", "paginationGoTo"),
+    Input("first_table_page_input", "value"),
 )
 def update_page_size(goto):
     if goto is None:
@@ -122,8 +125,8 @@ def update_page_size(goto):
 
 
 @callback(
-    Output("specific_cell_DEG_grid", "paginationGoTo"),
-    Input("specific_cell_goto-page-input", "value"),
+    Output("second_table_grid", "paginationGoTo"),
+    Input("second_table_goto_page_input", "value"),
 )
 def update_page_size(goto):
     if goto is None:
