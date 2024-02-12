@@ -21,6 +21,7 @@ SCSA/
 temp/
 
 # Generated csv files
+Cell_Annotation_and_DGE/DEG_results/
 
 # Distribution / packaging
 .Python
