@@ -14,6 +14,12 @@ if os.path.exists('DEG_results'):
 else:
     shutil.copytree('./../Cell_Annotation_and_DGE/DEG_results', 'DEG_results')
 
+if os.path.exists('assets/figures'):
+    shutil.rmtree('assets/figures')
+    shutil.copytree('./../Cell_Annotation_and_DGE/figures', 'assets/figures')
+else:
+    shutil.copytree('./../Cell_Annotation_and_DGE/figures', 'assets/figures')
+
 
 diseases_list = ['DiabetesII', 'MPN']
 
@@ -81,6 +87,24 @@ app.layout = dbc.Container([
         dbc.Col([
             html.H4("First Dataset:", style={'color': 'white'}),
             dcc.Dropdown(datasets, value=datasets[0], id='first_table_dropdown'),
+
+            html.Br(),
+            html.Br(),
+
+            dbc.Col([
+                html.H4('SCSA annotated cells vs. Panglaodb', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_SCSA_cellType_annotation')]),
+                html.Br(),
+                html.H4('Cell Distribution between Case and Control', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_donor_cells')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_embedding_cell_types')]),
+                html.Br(),
+                html.H4('Calculated Ro/e between Case and Control', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_roe')]),
+            ]),
+
             html.Br(),
             html.H6("Go to page:", style={'color': 'white'}),
             dcc.Input(id="first_table_page_input", type="number", style={'font-size': 'large'}, value=1),
@@ -89,11 +113,29 @@ app.layout = dbc.Container([
             first_table_grid,
         ],
             width=6,
-            style={"margin": 50, 'width': 500}),
+            style={"margin": 50, 'width': 550}),
 
         dbc.Col([
             html.H4("Second Dataset:", style={'color': 'white'}),
             dcc.Dropdown(datasets, value=datasets[1], id='second_table_dropdown'),
+
+            html.Br(),
+            html.Br(),
+
+            dbc.Col([
+                html.H4('SCSA annotated cells vs. Panglaodb', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_SCSA_cellType_annotation')]),
+                html.Br(),
+                html.H4('Cell Distribution between Case and Control', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_donor_cells')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_embedding_cell_types')]),
+                html.Br(),
+                html.H4('Calculated Ro/e between Case and Control', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_roe')]),
+            ]),
+
             html.Br(),
             html.H6("Go to page:", style={'color': 'white'}),
             dcc.Input(id="second_table_goto_page_input", type="number", style={'font-size': 'large'}, value=1),
@@ -102,7 +144,7 @@ app.layout = dbc.Container([
             specific_cell_DEG_grid,
         ],
             width=6,
-            style={"margin": 50, 'width': 500}),
+            style={"margin": 50, 'width': 550}),
 
     ]),
 ])
@@ -121,23 +163,32 @@ def update_disease(disease_name):
 
 
 @callback(
-    Output('first_table_grid', 'rowData'),
+    [Output('first_table_grid', 'rowData'),
+     Output('first_SCSA_cellType_annotation', 'src'),
+     Output('first_donor_cells', 'src'),
+     Output('first_embedding_cell_types', 'src'),
+     Output('first_roe', 'src')],
     [Input('first_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
-def update_second_table(dataset_name, disease_name):
+def update_first_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
-    return dataset.to_dict("records")
-
+    plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
+    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
 
 @callback(
-    Output('second_table_grid', 'rowData'),
+    [Output('second_table_grid', 'rowData'),
+     Output('second_SCSA_cellType_annotation', 'src'),
+     Output('second_donor_cells', 'src'),
+     Output('second_embedding_cell_types', 'src'),
+     Output('second_roe', 'src')],
     [Input('second_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
 def update_second_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
-    return dataset.to_dict("records")
+    plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
+    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
 
 
 @callback(
