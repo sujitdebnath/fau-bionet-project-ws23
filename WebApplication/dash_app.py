@@ -8,6 +8,7 @@ import pandas as pd
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], serve_locally=True)
 
+"""
 if os.path.exists('DEG_results'):
     shutil.rmtree('DEG_results')
     shutil.copytree('./../Cell_Annotation_and_DGE/DEG_results', 'DEG_results')
@@ -19,7 +20,7 @@ if os.path.exists('assets/figures'):
     shutil.copytree('./../Cell_Annotation_and_DGE/figures', 'assets/figures')
 else:
     shutil.copytree('./../Cell_Annotation_and_DGE/figures', 'assets/figures')
-
+"""
 
 diseases_list = ['DiabetesII', 'MPN']
 
