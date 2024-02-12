@@ -8,11 +8,11 @@ __pycache__/
 
 # data directory
 cache/
-figures/
 write/
 rsconnect-python/
 __pycache__/
 data/
+Cell_Annotation_and_DGE/figures/
 
 # SCSA
 SCSA/
