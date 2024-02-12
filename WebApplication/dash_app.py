@@ -100,9 +100,6 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.H4('Cell Types based on SCSA', style={'color': 'white'}),
                 dbc.Row([html.Img(id='first_embedding_cell_types')]),
-                html.Br(),
-                html.H4('Calculated Ro/e between Case and Control', style={'color': 'white'}),
-                dbc.Row([html.Img(id='first_roe')]),
             ]),
 
             html.Br(),
@@ -131,9 +128,6 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.H4('Cell Types based on SCSA', style={'color': 'white'}),
                 dbc.Row([html.Img(id='second_embedding_cell_types')]),
-                html.Br(),
-                html.H4('Calculated Ro/e between Case and Control', style={'color': 'white'}),
-                dbc.Row([html.Img(id='second_roe')]),
             ]),
 
             html.Br(),
@@ -166,29 +160,27 @@ def update_disease(disease_name):
     [Output('first_table_grid', 'rowData'),
      Output('first_SCSA_cellType_annotation', 'src'),
      Output('first_donor_cells', 'src'),
-     Output('first_embedding_cell_types', 'src'),
-     Output('first_roe', 'src')],
+     Output('first_embedding_cell_types', 'src')],
     [Input('first_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
 def update_first_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
     plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
-    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
+    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png'
 
 @callback(
     [Output('second_table_grid', 'rowData'),
      Output('second_SCSA_cellType_annotation', 'src'),
      Output('second_donor_cells', 'src'),
-     Output('second_embedding_cell_types', 'src'),
-     Output('second_roe', 'src')],
+     Output('second_embedding_cell_types', 'src')],
     [Input('second_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
 def update_second_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
     plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
-    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
+    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png'
 
 
 @callback(
