@@ -14,7 +14,7 @@ This project goals are:
 This project consists of ***two*** parts:
 
 1. scRNA-seq Analysis
-    - Which consists of disease research, data collection, cell type annptation, and DEG
+    - Which consists of disease research, data collection, cell type annotation, and DEG
 2. Preparing a web-based template to demonstrate the finding
     - Which should be interactive and easy to use.
 
@@ -53,17 +53,60 @@ To work with such a technique, it is required to prepare datasets is a specific 
     │
     ├── WebApplication
     └── etc.
-    
+
+## Images of Project
+### Disease Selection and Introduction
+Here you can select the disease type, based on which, the datasets will be updated.
+
+![Disease Selection](README_FILES/banner.png)
+
+### Dataset Selection
+Here you can select the dataset you want to work on, based on which, the plots and table will be updated.
+
+![Disease Selection](README_FILES/dataset_selection.png)
+
+### Cell by Donors
+![Disease Selection](README_FILES/Cells_By_Donors.png)
+
+### Leiden Clustering over data
+![Disease Selection](README_FILES/Leiden.png)
+
+### Cell Type Annotation using SCSA over CellMarker database
+![Disease Selection](README_FILES/CellMarker.png)
+
+### Cell Type Annotation using SCSA over Panglaodb database
+![Disease Selection](README_FILES/Panglaodb.png)
+
+### Cell Embeddings
+![Disease Selection](README_FILES/cell_embedding.png)
+
+### Ro/e
+![Disease Selection](README_FILES/ROE.png)
+
+### Differential Gene Expression Tables
+![Disease Selection](README_FILES/tables.png)
+
 ### Preprocessing AnnData
+In process
+
 ### Cell Type Annotation
+In process
+
 ### Ro/e Calculation
+In process
+
 ### DEG Calculation
+In process
 
 ## Part II
 ### Web Application
+In process
+
 ### Features
+In process
 
 ## Conclusion
+In process
 
 ## Future Goals
 - [ ] Writing the README.md file
