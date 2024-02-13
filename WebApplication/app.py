@@ -93,14 +93,23 @@ app.layout = dbc.Container([
             html.Br(),
 
             dbc.Col([
-                html.H4('SCSA annotated cells vs. Panglaodb', style={'color': 'white'}),
-                dbc.Row([html.Img(id='first_SCSA_cellType_annotation')]),
-                html.Br(),
-                html.H4('Cell Distribution between Case and Control', style={'color': 'white'}),
+                html.H4('Cells by Donors', style={'color': 'white'}),
                 dbc.Row([html.Img(id='first_donor_cells')]),
                 html.Br(),
-                html.H4('Cell Types based on SCSA', style={'color': 'white'}),
+                html.H4('Leiden Clustering of Data', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_leiden')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA [Cell Marker]', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_SCSA_cellType_cellMarker')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA [Panglaodb]', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_SCSA_cellType_panglaodb')]),
+                html.Br(),
+                html.H4('Cell embeddings', style={'color': 'white'}),
                 dbc.Row([html.Img(id='first_embedding_cell_types')]),
+                html.Br(),
+                html.H4('Ro/e', style={'color': 'white'}),
+                dbc.Row([html.Img(id='first_roe')]),
             ]),
 
             html.Br(),
@@ -111,7 +120,7 @@ app.layout = dbc.Container([
             first_table_grid,
         ],
             width=6,
-            style={"margin": 50, 'width': 550}),
+            style={"margin": 30, 'width': 550}),
 
         dbc.Col([
             html.H4("Second Dataset:", style={'color': 'white'}),
@@ -121,14 +130,23 @@ app.layout = dbc.Container([
             html.Br(),
 
             dbc.Col([
-                html.H4('SCSA annotated cells vs. Panglaodb', style={'color': 'white'}),
-                dbc.Row([html.Img(id='second_SCSA_cellType_annotation')]),
-                html.Br(),
-                html.H4('Cell Distribution between Case and Control', style={'color': 'white'}),
+                html.H4('Cells by Donors', style={'color': 'white'}),
                 dbc.Row([html.Img(id='second_donor_cells')]),
                 html.Br(),
-                html.H4('Cell Types based on SCSA', style={'color': 'white'}),
+                html.H4('Leiden Clustering of Data', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_leiden')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA [Cell Marker]', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_SCSA_cellType_cellMarker')]),
+                html.Br(),
+                html.H4('Cell Types based on SCSA [Panglaodb]', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_SCSA_cellType_panglaodb')]),
+                html.Br(),
+                html.H4('Cell embeddings', style={'color': 'white'}),
                 dbc.Row([html.Img(id='second_embedding_cell_types')]),
+                html.Br(),
+                html.H4('Ro/e', style={'color': 'white'}),
+                dbc.Row([html.Img(id='second_roe')]),
             ]),
 
             html.Br(),
@@ -139,7 +157,7 @@ app.layout = dbc.Container([
             specific_cell_DEG_grid,
         ],
             width=6,
-            style={"margin": 50, 'width': 550}),
+            style={"margin": 30, 'width': 550}),
 
     ]),
 ])
@@ -159,29 +177,35 @@ def update_disease(disease_name):
 
 @callback(
     [Output('first_table_grid', 'rowData'),
-     Output('first_SCSA_cellType_annotation', 'src'),
      Output('first_donor_cells', 'src'),
-     Output('first_embedding_cell_types', 'src')],
+     Output('first_leiden', 'src'),
+     Output('first_SCSA_cellType_cellMarker', 'src'),
+     Output('first_SCSA_cellType_panglaodb', 'src'),
+     Output('first_embedding_cell_types', 'src'),
+     Output('first_roe', 'src')],
     [Input('first_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
 def update_first_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
     plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
-    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png'
+    return dataset.to_dict("records"), f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/leiden.png', f'{plot_base_url}/SCSA_cellType_cellmarker.png', f'{plot_base_url}/SCSA_cellType_panglaodb.png',f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
 
 @callback(
     [Output('second_table_grid', 'rowData'),
-     Output('second_SCSA_cellType_annotation', 'src'),
      Output('second_donor_cells', 'src'),
-     Output('second_embedding_cell_types', 'src')],
+     Output('second_leiden', 'src'),
+     Output('second_SCSA_cellType_cellMarker', 'src'),
+     Output('second_SCSA_cellType_panglaodb', 'src'),
+     Output('second_embedding_cell_types', 'src'),
+     Output('second_roe', 'src')],
     [Input('second_table_dropdown', 'value'),
      Input('disease_name', 'value')]
 )
 def update_second_table(dataset_name, disease_name):
     dataset = pd.read_csv(f'./DEG_results/{disease_name}/{dataset_name}/DEG_All.csv')
     plot_base_url = f'assets/figures/X_mde/{disease_name}/{dataset_name}'
-    return dataset.to_dict("records"), f'{plot_base_url}/SCSA_cellType_annotation.png', f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/embedding_cell_types.png'
+    return dataset.to_dict("records"), f'{plot_base_url}/donor_cells.png', f'{plot_base_url}/leiden.png', f'{plot_base_url}/SCSA_cellType_cellmarker.png', f'{plot_base_url}/SCSA_cellType_panglaodb.png',f'{plot_base_url}/embedding_cell_types.png', f'{plot_base_url}/ROE.png'
 
 
 @callback(
