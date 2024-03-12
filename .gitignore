@@ -1,15 +1,6 @@
 # Ignore dataset dir
 dataset/
 
-# Virtual Env
-bionets/
-
-# Ignore Nextflow, Scanpy dirs, and Others
-nextflow_test/
-cache/
-prev_pipeline/data/
-pipelines/SCSA/
-
 # Ignore Mac DS_Store files
 .DS_Store
 **/.DS_Store
