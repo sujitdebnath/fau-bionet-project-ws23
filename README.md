@@ -1,131 +1,44 @@
-# Large-scale differential gene expression analysis in scRNA-seq data
-
-Is a project proposed by [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) and [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/) at the [BIONETS](https://www.bionets.tf.fau.de/) at FAU.
-
-This project goals are:
-
-- Retrieve scRNA-seq data from case-control studies for one fixed disease.
-- Run pipelines for
-    - Clustering and cell type annotation
-    - Identification of DEGs, comparing cells from the same cell type between case and control.
-- Make a web-app to interactively visualize the results.
-- (Possibly) Extend to > 1 diseases.
-
-This project consists of ***two*** parts:
-
-1. scRNA-seq Analysis
-    - Which consists of disease research, data collection, cell type annotation, and DEG
-2. Preparing a web-based template to demonstrate the finding
-    - Which should be interactive and easy to use.
-
-## Part I - scRNA-seq Analysis
-As the main part of the project, this section consists of most of the work. We tried to create a pipeline, to which we feed the datasets of a disease and retrieve the results as `csv` files and plots.
-
-### Input Specific Pipeline
-As there are multiple types of file formats, in which we can store different types of scRNA-seq data, we decided to continue with `10x-genomics` format.
-To work with such a technique, it is required to prepare datasets is a specific format, shown below:
-
-    BioNet
-    ├── Cell_Annotation_and_DGE
-    │    ├── CellType_Annotation_with_DEG_Pipeline.ipynb
-    │    └── data
-    │        ├── Disease Name 1 (e.g. Diabetes II)
-    │        │   └── Dataset 1
-    │        │       ├── Case 1
-    │        │       │   ├── barcodes.tsv.gz
-    │        │       │   ├── features.tsv.gz
-    │        │       │   └── matrix.mtx.gz
-    │        │       └── Control 1
-    │        │           ├── barcodes.tsv.gz
-    │        │           ├── features.tsv.gz
-    │        │           └── matrix.mtx.gz
-    │        │
-    │        └── Disease Name 2 (e.g. MPN)
-    │            └── Dataset 1
-    │                 ├── Case 1
-    │                 │   ├── barcodes.tsv.gz
-    │                 │   ├── features.tsv.gz
-    │                 │   └── matrix.mtx.gz
-    │                 └── Control 1
-    │                     ├── barcodes.tsv.gz
-    │                     ├── features.tsv.gz
-    │                     └── matrix.mtx.gz
-    │
-    ├── WebApplication
-    └── etc.
-
-## Images of Project
-### Disease Selection and Introduction
-Here you can select the disease type, based on which, the datasets will be updated.
-
-![Disease Selection](README_FILES/banner.png)
-
-### Dataset Selection
-Here you can select the dataset you want to work on, based on which, the plots and table will be updated.
-
-![Disease Selection](README_FILES/dataset_selection.png)
-
-### Cell by Donors
-![Disease Selection](README_FILES/Cells_By_Donors.png)
-
-### Leiden Clustering over data
-![Disease Selection](README_FILES/Leiden.png)
-
-### Cell Type Annotation using SCSA over CellMarker database
-![Disease Selection](README_FILES/CellMarker.png)
-
-### Cell Type Annotation using SCSA over Panglaodb database
-![Disease Selection](README_FILES/Panglaodb.png)
-
-### Cell Embeddings
-![Disease Selection](README_FILES/cell_embedding.png)
-
-### Ro/e
-![Disease Selection](README_FILES/ROE.png)
-
-### Differential Gene Expression Tables
-![Disease Selection](README_FILES/tables.png)
-
-### Preprocessing AnnData
-In process
-
-### Cell Type Annotation
-In process
-
-### Ro/e Calculation
-In process
-
-### DEG Calculation
-In process
-
-## Part II
-### Web Application
-In process
-
-### Features
-In process
-
-## Conclusion
-In process
-
-## Future Goals
-- [ ] Writing the README.md file
-
-## How to run
-To run the web application:
+## Environment Setup
 
 ```bash
-git clone https://github.com/FarzamTP/BioNet.git
-cd BioNet
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+git clone git@github.com:sujitdebnath/fau-bionets-project-ws23.git
+cd fau-bionets-project-ws23
+
+python3 -m venv <env_name>
+source <env_name>/bin/activate
+
+pip install --upgrade pip
+
+pip install pandas numpy scipy scikit-learn seaborn matplotlib jupyter openpyxl scanpy anndata leidenalg louvain
+
+#-------------
+# CPU only
+pip install torch===2.0.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install torch_geometric
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cpu.html
+
+pip install -U omicverse
+#-------------
+
+deactivate
+rm -rf <env_name>
 ```
 
-### Running the Dash Application
+MacOS Silicon Based
+
 ```bash
-cd WebApplication
-python3 app.py
-```
+conda create -n bionets python=3.10
+conda activate bionets
 
-Then you can visit ```http://127.0.0.1:8050``` to open the application locally.
+conda install -c conda-forge pandas numpy scipy scikit-learn seaborn matplotlib jupyterlab scanpy anndata pymde python-igraph leidenalg
+pip install louvain
+
+# https://omicverse.readthedocs.io/en/latest/Installation_guild/
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
+pip install torch_geometric
+conda install s_gd2 -c conda-forge
+pip install -U omicverse
+
+conda deactivate
+conda remove -n bionets --all
+```
