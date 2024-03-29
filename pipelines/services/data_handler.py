@@ -1,16 +1,10 @@
 import os
 import sys
 import argparse
-import numpy as np
-import pandas as pd
 import anndata as ad
 import scanpy as sc
 import omicverse as ov
-import seaborn as sns
-import matplotlib.pyplot as plt
 from typing import List, Callable, Any, Optional
-
-ov.ov_plot_set()
 
 
 BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -63,48 +57,9 @@ def load_data_case_and_control(dataset_path: str) -> sc.AnnData:
     elif control_dir_path is not None:
         adata = adata_control
     
-    return adata
-
-def save_data(anndata: sc.AnnData, res_fpath: str) -> str:
-    try:
-        anndata.write(res_fpath)
-        print(f"Succeed: Successfully saved AnnData object as {os.path.basename(res_fpath)} in the corresponding data dir.")
-    except Exception as e:
-        print(f"Failed: Error while saving AnnData object. {str(e)}")
-        sys.exit(1)
+    # adata.obs_names_make_unique()
     
-    return res_fpath
-
-def set_raw_data(anndata: sc.AnnData) -> sc.AnnData:
-    anndata.raw = anndata
-    return anndata
-
-def plot_figures(
-        anndata: sc.AnnData,
-        dataset_id: str,
-        plot_function: Callable[[sc.AnnData, Any], Any],
-        plot_title: str = None,
-        xlabel: str = None,
-        ylabel: str = None,
-        plot_fname: str = None,
-        *args, **kwargs
-    ) -> None:
-    figures_dir = create_directory(os.path.join(BASE_PLOT_DIR, dataset_id))
-
-    try:
-        plot_function(anndata, *args, **kwargs, show=False)
-        ax = plt.gca()
-        
-        if xlabel: ax.set_xlabel(xlabel)
-        if ylabel: ax.set_ylabel(ylabel)
-        if plot_title: ax.set_title(plot_title)
-        if plot_fname is None: plot_fname = f"{dataset_id}_{str(len(os.listdir(figures_dir))+1)}.png"
-        
-        plt.savefig(os.path.join(figures_dir, plot_fname), bbox_inches='tight')
-        plt.close()
-        print(f"Succeed: Plot saved as {plot_fname} in the corresponding figure dir.")
-    except Exception as e:
-        print(f"Failed: Error during plot generation, {str(e)}")
+    return adata
 
 def run_data_handler() -> None:
     parser = argparse.ArgumentParser(description='Data Handler Script')
@@ -122,7 +77,6 @@ def run_data_handler() -> None:
 
     adata = load_data_case_and_control(dataset_path=dataset_dir)
     print(adata)
-    # save_data(anndata, res_fpath=os.path.join(dataset_dir, f"{dataset_id}.h5ad"))
 
 
 if __name__ == '__main__':
