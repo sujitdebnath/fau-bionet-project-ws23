@@ -15,7 +15,7 @@ BASE_DEG_DIR  = os.path.join(BASE_DIR, 'results', 'deg_results')
 
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument('--disease_id', type=str, help='Unique identifier for disease, e.g., diabetesII, mpn')
-    parser.add_argument('--dataset_id', type=str, help='Unique identifier for the dataset')
+    parser.add_argument('--dataset_id', type=str, help='Unique identifier of the dataset for that specific disease')
 
     return parser
 
@@ -61,6 +61,18 @@ def load_data_case_and_control(dataset_path: str) -> sc.AnnData:
     
     return adata
 
+def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> str:
+    try:
+        temp_adata_dir = os.path.join(BASE_DIR, 'pipelines', 'temp_adata')
+        res_fpath      = os.path.join(temp_adata_dir, f'{disease_id}_{dataset_id}.h5ad')
+        adata.write(res_fpath)
+        print(f"Succeed: Successfully saved AnnData object as {os.path.basename(res_fpath)} in the temporary adata dir.")
+    except Exception as e:
+        print(f"Failed: Error while saving AnnData object. {str(e)}")
+        sys.exit(1)
+    
+    return res_fpath
+
 def run_data_handler() -> None:
     parser = argparse.ArgumentParser(description='Data Handler Script')
     parser = parse_add_args(parser)
@@ -77,6 +89,9 @@ def run_data_handler() -> None:
 
     adata = load_data_case_and_control(dataset_path=dataset_dir)
     print(adata)
+
+    temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
+    save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
 
 
 if __name__ == '__main__':
