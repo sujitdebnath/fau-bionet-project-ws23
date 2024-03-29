@@ -9,8 +9,7 @@ from typing import List, Callable, Any, Optional
 
 BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_DATA_DIR = os.path.join(BASE_DIR, 'dataset')
-BASE_FIG_DIR  = os.path.join(BASE_DIR, 'results', 'figures')
-BASE_DEG_DIR  = os.path.join(BASE_DIR, 'results', 'deg_results')
+BASE_RES_DIR  = os.path.join(BASE_DIR, 'results')
 
 
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -31,6 +30,22 @@ def create_directory(dir_path: str) -> str:
         sys.exit(1)
     
     return dir_path
+
+def prepare_all_dirs(disease_id: str, dataset_id: str) -> None:
+    # create fig and deg_res dir
+    fig_dir     = create_directory(dir_path=os.path.join(BASE_RES_DIR, 'figures'))
+    deg_res_dir = create_directory(dir_path=os.path.join(BASE_RES_DIR, 'deg_results'))
+
+    # create disease dir
+    disease_fig_dir = create_directory(dir_path=os.path.join(fig_dir, disease_id))
+    disease_deg_dir = create_directory(dir_path=os.path.join(deg_res_dir, disease_id))
+
+    # create fig and deg dirs for specific dataset of specific disease
+    dataset_fig_dir = create_directory(dir_path=os.path.join(disease_fig_dir, dataset_id))
+    dataset_deg_dir = create_directory(dir_path=os.path.join(disease_deg_dir, dataset_id))
+
+    # create temp dirs to store temp adata in pipelines
+    temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
 
 def load_data_case_and_control(disease_id: str, dataset_id: str) -> sc.AnnData:
     dataset_path = os.path.join(BASE_DIR, 'pipelines', 'temp_adata', f'{disease_id}_{dataset_id}.h5ad')
@@ -69,7 +84,7 @@ def load_data_case_and_control(disease_id: str, dataset_id: str) -> sc.AnnData:
 
 def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> None:
     try:
-        temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
+        temp_adata_dir = os.path.join(BASE_DIR, 'pipelines', 'temp_adata')
         res_fpath      = os.path.join(temp_adata_dir, f'{disease_id}_{dataset_id}.h5ad')
         adata.write(res_fpath)
         print(f"Succeed: Successfully saved AnnData object as {os.path.basename(res_fpath)} in the temporary adata dir.")
@@ -85,13 +100,11 @@ def run_data_handler() -> None:
     disease_id = args.disease_id
     dataset_id = args.dataset_id
 
-    disease_fig_dir = create_directory(dir_path=os.path.join(BASE_FIG_DIR, disease_id))
-    dataset_fig_dir = create_directory(dir_path=os.path.join(disease_fig_dir, dataset_id))
-    disease_deg_dir = create_directory(dir_path=os.path.join(BASE_DEG_DIR, disease_id))
-    dataset_deg_dir = create_directory(dir_path=os.path.join(disease_deg_dir, dataset_id))
+    prepare_all_dirs(disease_id=disease_id, dataset_id=dataset_id)
 
     adata = load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
     print(adata)
+
     save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
 
 
