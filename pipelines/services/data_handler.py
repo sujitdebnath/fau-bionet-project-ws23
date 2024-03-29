@@ -32,46 +32,50 @@ def create_directory(dir_path: str) -> str:
     
     return dir_path
 
-def load_data_case_and_control(dataset_path: str) -> sc.AnnData:
-    case_dir_path    = None
-    control_dir_path = None
+def load_data_case_and_control(disease_id: str, dataset_id: str) -> sc.AnnData:
+    dataset_path = os.path.join(BASE_DIR, 'pipelines', 'temp_adata', f'{disease_id}_{dataset_id}.h5ad')
 
-    for dir_name in os.listdir(dataset_path):
-        if dir_name.startswith('case'):
-            case_dir_path = os.path.join(dataset_path, dir_name)
-        elif dir_name.startswith('control'):
-            control_dir_path = os.path.join(dataset_path, dir_name)
+    if os.path.exists(dataset_path):
+        adata = sc.read_h5ad(dataset_path) 
+    else:
+        dataset_path     = os.path.join(BASE_DATA_DIR, disease_id, dataset_id)
+        case_dir_path    = None
+        control_dir_path = None
 
-    if case_dir_path is not None:
-        adata_case              = sc.read_10x_mtx(case_dir_path, var_names='gene_symbols', cache=True)
-        adata_case.obs['donor'] = 'case'
-    
-    if control_dir_path is not None:
-        adata_control              = sc.read_10x_mtx(control_dir_path, var_names='gene_symbols', cache=True)
-        adata_control.obs['donor'] = 'control'
+        for dir_name in os.listdir(dataset_path):
+            if dir_name.startswith('case'):
+                case_dir_path = os.path.join(dataset_path, dir_name)
+            elif dir_name.startswith('control'):
+                control_dir_path = os.path.join(dataset_path, dir_name)
 
-    if case_dir_path is not None and control_dir_path is not None:
-        adata = ad.concat([adata_case, adata_control])
-    elif case_dir_path is not None:
-        adata = adata_case
-    elif control_dir_path is not None:
-        adata = adata_control
-    
-    # adata.obs_names_make_unique()
+        if case_dir_path is not None:
+            adata_case              = sc.read_10x_mtx(case_dir_path, var_names='gene_symbols', cache=True)
+            adata_case.obs['donor'] = 'case'
+        
+        if control_dir_path is not None:
+            adata_control              = sc.read_10x_mtx(control_dir_path, var_names='gene_symbols', cache=True)
+            adata_control.obs['donor'] = 'control'
+
+        if case_dir_path is not None and control_dir_path is not None:
+            adata = ad.concat([adata_case, adata_control])
+        elif case_dir_path is not None:
+            adata = adata_case
+        elif control_dir_path is not None:
+            adata = adata_control
+        
+        # adata.obs_names_make_unique()
     
     return adata
 
-def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> str:
+def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> None:
     try:
-        temp_adata_dir = os.path.join(BASE_DIR, 'pipelines', 'temp_adata')
+        temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
         res_fpath      = os.path.join(temp_adata_dir, f'{disease_id}_{dataset_id}.h5ad')
         adata.write(res_fpath)
         print(f"Succeed: Successfully saved AnnData object as {os.path.basename(res_fpath)} in the temporary adata dir.")
     except Exception as e:
         print(f"Failed: Error while saving AnnData object. {str(e)}")
         sys.exit(1)
-    
-    return res_fpath
 
 def run_data_handler() -> None:
     parser = argparse.ArgumentParser(description='Data Handler Script')
@@ -81,16 +85,13 @@ def run_data_handler() -> None:
     disease_id = args.disease_id
     dataset_id = args.dataset_id
 
-    dataset_dir     = os.path.join(BASE_DATA_DIR, disease_id, dataset_id)
     disease_fig_dir = create_directory(dir_path=os.path.join(BASE_FIG_DIR, disease_id))
     dataset_fig_dir = create_directory(dir_path=os.path.join(disease_fig_dir, dataset_id))
     disease_deg_dir = create_directory(dir_path=os.path.join(BASE_DEG_DIR, disease_id))
     dataset_deg_dir = create_directory(dir_path=os.path.join(disease_deg_dir, dataset_id))
 
-    adata = load_data_case_and_control(dataset_path=dataset_dir)
+    adata = load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
     print(adata)
-
-    temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
     save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
 
 
