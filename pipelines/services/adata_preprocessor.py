@@ -1,4 +1,3 @@
-import os
 import argparse
 import scanpy as sc
 import omicverse as ov
@@ -51,7 +50,7 @@ def apply_clustering(adata: sc.AnnData, cluster_mode: str) -> sc.AnnData:
     
     return adata
 
-def run_data_preprocessing() -> None:
+def run_adata_preprocessing() -> None:
     parser = argparse.ArgumentParser(description='Data Preprocessor Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -92,4 +91,4 @@ def run_data_preprocessing() -> None:
 
 
 if __name__ == '__main__':
-    run_data_preprocessing()
+    run_adata_preprocessing()

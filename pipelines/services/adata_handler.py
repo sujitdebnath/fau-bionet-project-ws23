@@ -86,13 +86,14 @@ def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> None:
     try:
         temp_adata_dir = os.path.join(BASE_DIR, 'pipelines', 'temp_adata')
         res_fpath      = os.path.join(temp_adata_dir, f'{disease_id}_{dataset_id}.h5ad')
+        
         adata.write(res_fpath)
         print(f"Succeed: Successfully saved AnnData object as {os.path.basename(res_fpath)} in the temporary adata dir.")
     except Exception as e:
         print(f"Failed: Error while saving AnnData object. {str(e)}")
         sys.exit(1)
 
-def run_data_handler() -> None:
+def run_adata_handler() -> None:
     parser = argparse.ArgumentParser(description='Data Handler Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -109,4 +110,4 @@ def run_data_handler() -> None:
 
 
 if __name__ == '__main__':
-    run_data_handler()
+    run_adata_handler()
