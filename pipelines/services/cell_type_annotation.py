@@ -7,13 +7,11 @@ import adata_handler
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument('--disease_id', type=str, help='Unique identifier for disease, e.g., diabetesII, mpn')
     parser.add_argument('--dataset_id', type=str, help='Unique identifier of the dataset for that specific disease')
-
     parser.add_argument('--cellmarker', action='store_true', help='Use cellmarker as the reference dataset for annotation')
     parser.add_argument('--panglaodb', action='store_true', help='Use panglaodb as the reference dataset for annotation')
     parser.add_argument('--foldchange', type=float, default=1.5, help='Fold change threshold')
     parser.add_argument('--pvalue', type=float, default=0.01, help='P-value threshold')
     parser.add_argument('--celltype', type=str, default='normal', help='Cell type for annotation')
-
     parser.add_argument('--clustertype', type=str, default='leiden', help='Clustering name used in scanpy')
     parser.add_argument('--rank_rep', action='store_true', help='Rank representation')
 

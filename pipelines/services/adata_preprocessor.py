@@ -1,7 +1,7 @@
 import argparse
 import scanpy as sc
 import omicverse as ov
-from adata_handler import load_data_case_and_control, save_adata
+import adata_handler
 
 
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -67,7 +67,7 @@ def run_adata_preprocessing() -> None:
     cluster_mode    = args.cluster_mode
 
     # load existing anndata with case and control
-    adata = load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
+    adata = adata_handler.load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
     print(adata)
     
     # apply quantity control
@@ -86,7 +86,7 @@ def run_adata_preprocessing() -> None:
     adata = apply_clustering(adata=adata, cluster_mode=cluster_mode)
 
     # Save preprocessed data
-    save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
+    adata_handler.save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
     print(adata)
 
 
