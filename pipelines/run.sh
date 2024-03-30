@@ -30,3 +30,17 @@ python3 "${PROJECT_DIR}/pipelines/services/adata_preprocessor.py" \
 echo "----------------------------------- Data Preprocessing Ended -----------------------------------"
 
 echo ""
+
+# Run the cell type annotation script with required arguments
+echo "----------------------------------- Cell-type Annotation Started -----------------------------------"
+python3 "${PROJECT_DIR}/pipelines/services/cell_type_annotation.py" \
+    --disease_id "${disease_id}" \
+    --dataset_id "${dataset_id}" \
+    --cellmarker \
+    --panglaodb \
+    --foldchange 1.5 \
+    --pvalue 0.01 \
+    --celltype 'normal' \
+    --clustertype 'leiden' \
+    --rank_rep
+echo "----------------------------------- Cell-type Annotation Ended -----------------------------------"
