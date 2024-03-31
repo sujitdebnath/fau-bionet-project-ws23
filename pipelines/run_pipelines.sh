@@ -67,3 +67,21 @@ for disease_id in $diseases; do
         echo "---------------------------- Pipelines ended for disease: $disease_id, data: $dataset_id ----------------------------\n"
     done
 done
+
+# Unnecessary directories and files to remove
+DIRS_TO_REMOVE=(
+    "${PROJECT_DIR}/pipelines/cache"
+    "${PROJECT_DIR}/pipelines/temp"
+    "${PROJECT_DIR}/pipelines/temp_adata"
+)
+
+# Remove directories and files
+echo "Removing temporary directories and files:"
+for DIR in "${DIRS_TO_REMOVE[@]}"; do
+    if [ -d "$DIR" ]; then
+        rm -rf "$DIR"
+        echo "Removed: $DIR"
+    else
+        echo "Directory does not exist: $DIR"
+    fi
+done
