@@ -68,8 +68,7 @@ def run_adata_preprocessing() -> None:
 
     # load existing anndata with case and control
     adata = adata_handler.load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
-    print(adata)
-    
+
     # apply quantity control
     adata = apply_quantity_control(adata=adata, mito_perc=mito_perc, n_umis=n_umis, detected_genes=detected_genes)
     
@@ -87,7 +86,6 @@ def run_adata_preprocessing() -> None:
 
     # Save preprocessed data
     adata_handler.save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
-    print(adata)
 
 
 if __name__ == '__main__':

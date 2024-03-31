@@ -4,7 +4,6 @@ import argparse
 import anndata as ad
 import scanpy as sc
 import omicverse as ov
-from typing import List, Callable, Any, Optional
 
 
 BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

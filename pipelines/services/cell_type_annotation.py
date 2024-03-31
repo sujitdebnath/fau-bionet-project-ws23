@@ -5,7 +5,7 @@ import scanpy as sc
 import omicverse as ov
 import seaborn as sns
 import matplotlib.pyplot as plt
-from typing import List, Callable, Any, Optional, Tuple
+from typing import Callable, Any, Tuple
 import adata_handler
 
 
@@ -111,7 +111,6 @@ def run_cell_type_annotation() -> None:
 
     # load existing anndata with case and control
     adata = adata_handler.load_data_case_and_control(disease_id=disease_id, dataset_id=dataset_id)
-    print(adata)
 
     # apply SCSA cell type annotation
     apply_cell_type_anno_scsa(adata=adata, cellmarker=cellmarker, panglaodb=panglaodb,
@@ -147,7 +146,6 @@ def run_cell_type_annotation() -> None:
 
     # Save adata
     adata_handler.save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
-    print(adata)
 
 
 if __name__ == '__main__':
