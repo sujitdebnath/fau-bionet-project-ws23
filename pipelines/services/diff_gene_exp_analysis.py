@@ -65,7 +65,7 @@ def perform_diff_gene_exp_analysis(
         results_df  = pd.DataFrame(out[1:], columns=['Gene', 'Target Cell Type', 'Donor', 'Method', 'Score', 'pval_adj', 'LFC'])
         all_results = pd.concat([all_results, results_df])
     
-    all_results.to_csv(os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id, f'dge_analysis_data.csv'), index=False)
+    all_results.to_csv(os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id, f'dge_analysis_result.csv'), index=False)
 
 def run_dge_analysis() -> None:
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
