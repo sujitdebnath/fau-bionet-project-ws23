@@ -1,6 +1,11 @@
+import os
 import argparse
+import pandas as pd
 import scanpy as sc
 import omicverse as ov
+import seaborn as sns
+import matplotlib.pyplot as plt
+from typing import List, Callable, Any, Optional, Tuple
 import adata_handler
 
 
@@ -34,6 +39,61 @@ def apply_cell_type_anno_scsa(adata: sc.AnnData, cellmarker: bool, panglaodb: bo
         scsa.cell_anno(clustertype=clustertype, cluster='all', rank_rep=rank_rep)
         scsa.cell_auto_anno(adata, key='scsa_celltype_panglaodb')
 
+def plot_embeddings(
+        adata: sc.AnnData,
+        disease_id: str,
+        dataset_id: str,
+        plot_function: Callable[[sc.AnnData, Any], Any],
+        fig_size: Tuple[int, int],
+        plot_title: str = None,
+        xlabel: str = None,
+        ylabel: str = None,
+        plot_fname: str = None,
+        *args, **kwargs
+    ) -> None:
+    figures_dir = os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id)
+
+    try:
+        fig, ax = plt.subplots(figsize=fig_size)
+        plot_function(adata, *args, **kwargs, ax=ax, show=False)
+        
+        if xlabel: ax.set_xlabel(xlabel)
+        if ylabel: ax.set_ylabel(ylabel)
+        if plot_title: ax.set_title(plot_title)
+        if plot_fname is None: plot_fname = f"{disease_id}_{dataset_id}_{str(len(os.listdir(figures_dir))+1)}.png"
+        
+        plt.savefig(os.path.join(figures_dir, plot_fname), bbox_inches='tight')
+        plt.close()
+        print(f"Succeed: Plot saved as {plot_fname} in the corresponding figure dir.")
+    except Exception as e:
+        print(f"Failed: Error during plot generation, {str(e)}")
+
+def calculate_roe(adata: sc.AnnData, sample_key: str, cell_type_key: str) -> pd.DataFrame:
+    roe = None
+
+    try:
+        roe = ov.utils.roe(adata, sample_key=sample_key, cell_type_key=cell_type_key)
+    except Exception as e:
+        print(f"Failed: Error during Ro/e calculation, {str(e)}")
+
+    return roe
+
+def plot_roe(roe: pd.DataFrame, disease_id: str, dataset_id: str,):
+    figures_dir = os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id)
+    fig, ax     = plt.subplots(figsize=(2, 4))
+
+    transformed_roe = roe.copy()
+    transformed_roe = transformed_roe.applymap(lambda x: '+++' if x >= 2 else ('++' if x >= 1.5 else ('+' if x >= 1 else '+/-')))
+    
+    sns.heatmap(roe, annot=transformed_roe, cmap='RdBu_r', fmt='', cbar=True, ax=ax, vmin=0.5, vmax=1.5, cbar_kws={'shrink':0.5})
+    
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
+    plt.xlabel('Donor', fontsize=12)
+    plt.ylabel('Cell type', fontsize=12)
+    plt.title('Ro/e', fontsize=12)
+    plt.savefig(os.path.join(figures_dir, 'roe.png'), bbox_inches='tight')
+
 def run_cell_type_annotation() -> None:
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
     parser = parse_add_args(parser)
@@ -57,6 +117,33 @@ def run_cell_type_annotation() -> None:
     apply_cell_type_anno_scsa(adata=adata, cellmarker=cellmarker, panglaodb=panglaodb,
                               foldchange=foldchange, pvalue=pvalue, celltype=celltype,
                               clustertype=clustertype, rank_rep=rank_rep)
+    
+    # plot embeddings
+    plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
+                 plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='leiden.png',
+                 basis='X_mde', color=['leiden'], palette=ov.utils.palette(),
+                 plot_title='Leiden Cluster', xlabel='X_mde1', ylabel='X_mde2',
+                 frameon='small', legend_loc='on data', legend_fontoutline=0.01)
+    plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
+                 plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='scsa_cellmarker.png',
+                 plot_title='SCSA Celltype Annotation (cellmarker)', xlabel='X_mde1', ylabel='X_mde2',
+                 basis='X_mde', color=['scsa_celltype_cellmarker'], palette=ov.utils.palette(),
+                 frameon='small', legend_fontoutline=0.01)
+    plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
+                 plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='scsa_panglaodb.png',
+                 plot_title='SCSA Celltype Annotation (panglaodb)', xlabel='X_mde1', ylabel='X_mde2',
+                 basis='X_mde', color=['scsa_celltype_panglaodb'], palette=ov.utils.palette(),
+                 frameon='small', legend_fontoutline=0.01)
+    plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
+                 plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='donor_cells.png',
+                 plot_title='Donors (Case vs Control)', xlabel='X_mde1', ylabel='X_mde2',
+                 basis='X_mde', color=['donor'], palette=ov.utils.red_palette(),
+                 frameon='small', legend_fontoutline=2)
+    
+    # calculate Ro/e and plot if Ro/e calculated successfully
+    roe = calculate_roe(adata=adata, sample_key='donor', cell_type_key='scsa_celltype_cellmarker')
+    if roe is not None:
+        plot_roe(roe=roe, disease_id=disease_id, dataset_id=dataset_id)
 
     # Save adata
     adata_handler.save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
