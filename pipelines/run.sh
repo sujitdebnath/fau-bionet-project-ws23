@@ -44,3 +44,13 @@ python3 "${PROJECT_DIR}/pipelines/services/cell_type_annotation.py" \
     --clustertype 'leiden' \
     --rank_rep
 echo "----------------------------------- Cell-type Annotation Ended -----------------------------------"
+
+echo ""
+
+# Run the differential gene expression analysis script with required arguments
+echo "----------------------------------- DGE Analysis Started -----------------------------------"
+python3 "${PROJECT_DIR}/pipelines/services/diff_gene_exp_analysis.py" \
+    --disease_id "${disease_id}" \
+    --dataset_id "${dataset_id}" \
+    --dge_methods "t-test" "wilcoxon" "logreg" "t-test_overestim_var"
+echo "----------------------------------- DGE Analysis Ended -----------------------------------"
