@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import omicverse as ov
-from typing import List, Callable, Any, Optional, Tuple
+from typing import List
 import adata_handler
 
 
@@ -61,7 +61,7 @@ def perform_diff_gene_exp_analysis(
                         np.array([np.NaN] * len(result['names'][donor])).astype('object'),
                         np.array([np.NaN] * len(result['names'][donor])).astype('object'),
                     )).T))    
-            
+        
         results_df  = pd.DataFrame(out[1:], columns=['Gene', 'Target Cell Type', 'Donor', 'Method', 'Score', 'pval_adj', 'LFC'])
         all_results = pd.concat([all_results, results_df])
     
