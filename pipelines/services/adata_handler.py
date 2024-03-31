@@ -32,17 +32,9 @@ def create_directory(dir_path: str) -> str:
     return dir_path
 
 def prepare_all_dirs(disease_id: str, dataset_id: str) -> None:
-    # create fig and deg_res dir
-    fig_dir     = create_directory(dir_path=os.path.join(BASE_RES_DIR, 'figures'))
-    deg_res_dir = create_directory(dir_path=os.path.join(BASE_RES_DIR, 'deg_results'))
-
-    # create disease dir
-    disease_fig_dir = create_directory(dir_path=os.path.join(fig_dir, disease_id))
-    disease_deg_dir = create_directory(dir_path=os.path.join(deg_res_dir, disease_id))
-
-    # create fig and deg dirs for specific dataset of specific disease
-    dataset_fig_dir = create_directory(dir_path=os.path.join(disease_fig_dir, dataset_id))
-    dataset_deg_dir = create_directory(dir_path=os.path.join(disease_deg_dir, dataset_id))
+    # create disease and dataset dir in results
+    disease_res_dir = create_directory(dir_path=os.path.join(BASE_RES_DIR, disease_id))
+    dataset_res_dir = create_directory(dir_path=os.path.join(disease_res_dir, dataset_id))
 
     # create temp dirs to store temp adata in pipelines
     temp_adata_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'pipelines', 'temp_adata'))
@@ -51,7 +43,7 @@ def load_data_case_and_control(disease_id: str, dataset_id: str) -> sc.AnnData:
     dataset_path = os.path.join(BASE_DIR, 'pipelines', 'temp_adata', f'{disease_id}_{dataset_id}.h5ad')
 
     if os.path.exists(dataset_path):
-        adata = sc.read_h5ad(dataset_path) 
+        adata = sc.read_h5ad(dataset_path)
     else:
         dataset_path     = os.path.join(BASE_DATA_DIR, disease_id, dataset_id)
         case_dir_path    = None
