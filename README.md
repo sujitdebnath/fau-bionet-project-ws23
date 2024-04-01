@@ -2,7 +2,7 @@
 
 ![Banner GIF](img/banner.gif)
 
-Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called _**"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**_, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
+Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
 ## Project Goals
 The core goals of the project are as follows:
@@ -44,14 +44,14 @@ fau-bionet-project-ws23/
 │   │   ├── adata_preprocessor.py       # Script for preprocessing
 │   │   ├── cell_type_annotation.py     # Script for automatic cell annotation
 │   │   └── diff_gene_exp_analysis.py   # Script for DGE analysis
-│   ├── run_pipelines.sh                # Script to run pipelines
-│   └── cleaner.sh                      # Script to clean temporary files
+│   ├── run_pipelines.sh                # Script for running the whole pipeline
+│   └── cleaner.sh                      # Script for cleaning temporary files
 ├── results/                            # Results directory
-│   ├── disease_id1/                    # Store results for Disease 1
+│   ├── disease_id1/                    # Results directory of Disease 1
 │   │   ├── dataset_id1/                # Store results of dataset1
 │   │   ├── dataset_id2/                # Store results of dataset2
 │   │   └── ...
-│   ├── disease_id2/                    # Store results for Disease 2
+│   ├── disease_id2/                    # Results directory of Disease 2
 │   └── ...
 ├── dashboard/                          # Dashboard directory
 └── README.md                           # Project documentation
@@ -60,14 +60,29 @@ fau-bionet-project-ws23/
 ## Project Details
 
 ### 1. Dataset
+Two datasets of two diseases, type II Diabetes Mellitus and Myeloproliferative Neoplasm (MPN) have been obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) repository. Details are as follows,
+
+- **Diabetes Mellitus Type II:** This dataset investigates systemic immunological modifications caused by type 2 diabetes mellitus (DM) in patients diagnosed with periodontitis (PD). The research, conducted via single-cell RNA sequencing (scRNA-seq) analysis of peripheral blood mononuclear cells (PBMCs), aims to compare the immune response between patients with PD only and those with both PD and DM. Through this study, researchers seek to enhance understanding of the complex immunological relationships between PD and DM. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244515)]
+
+- **Myeloproliferative Neoplasm (MPN):**  This dataset encompasses a comprehensive analysis of platelets derived from patients diagnosed with MPNs, particularly essential thrombocythemia (ET). The study, conducted by researchers, revealed significant metabolic alterations mediating aberrant platelet activity and inflammation in MPNs through single-cell RNA sequencing (scRNA-Seq) analysis of primary PBMC samples. Notably, transcripts related to platelet activation, mTOR, and oxidative phosphorylation (OXPHOS) were found to be enriched in ET platelets. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244589)]
+
+In both of them, the experiment involved Homo sapiens as the organism and utilized expression profiling by high throughput sequencing as the primary experimental method. Case vs. control datasets for each disease were prepared by categorizing individuals into two groups: cases and controls. Cases consisted of individuals diagnosed with the respective disease (MPNs or Diabetes II), while controls comprised individuals without the disease. This stratification allowed for comparative analysis between the two groups to identify disease-associated features and patterns within the scRNA-seq data.
 
 ### 2. Pipelines
 
-#### 2.1. Preprocessing adata:
-#### 2.2. Automatic Cell-type Annotation:
-#### 2.3. DGE Analysis:
+#### 2.1. Preprocessing adata
+The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations.
+
+#### 2.2. Automatic Cell-type Annotation
+This pipeline automatically annotates cell types using the SCSA method. It utilizes reference datasets such as CellMarker or PanglaoDB to assign cell types based on fold change and p-value thresholds. The annotated cell types are then visualized using embeddings such as UMAP, along with donor information. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable.
+
+#### 2.3. DGE Analysis
+
+The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as t-test, Wilcoxon, logistic regression, and t-test with overestimated variance. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases.
 
 ### 3. Dashboard
+
+In progress
 
 ## Environment Setup
 
@@ -81,10 +96,6 @@ This section provides step-by-step instructions for setting up the required envi
 ### Linux
 
 ```bash
-# Clone the repository
-git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
-cd fau-bionets-project-ws23
-
 # Create a virtual environment and activate
 python3 -m venv <env_name>
 source <env_name>/bin/activate
@@ -111,10 +122,6 @@ rm -rf <env_name>
 ### MacOS (Silicon Based)
 
 ```bash
-# Clone the repository
-git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
-cd fau-bionets-project-ws23
-
 # Create a conda environment and activate
 conda create -n <conda_env_name> python=<python_version>
 conda activate <conda_env_name>
@@ -133,5 +140,25 @@ pip install -U omicverse
 
 # [if needed] Deactivate and remove conda environment
 conda deactivate
-conda remove -n bionets --all
+conda remove -n <conda_env_name> --all
+```
+
+### Run the Project
+
+```bash
+# Clone the repository
+git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
+cd fau-bionets-project-ws23
+
+# Activate virtural environment
+source <env_name>/bin/activate
+# or conda environment
+conda activate <conda_env_name>
+
+# Run the pipeline
+cd pipelines
+sh run_pipelines.sh
+
+# Run the dashboard
+
 ```
