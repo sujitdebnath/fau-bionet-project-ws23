@@ -1,3 +1,5 @@
+![Banner GIF](img/banner.gif)
+
 ## Environment Setup
 
 ```bash
