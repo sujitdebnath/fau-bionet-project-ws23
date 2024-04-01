@@ -70,17 +70,23 @@ In both of them, the experiment involved Homo sapiens as the organism and utiliz
 
 ### 2. Pipelines
 
+The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with specific case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, refer to the environment setup section.
+
 #### 2.1. Preprocessing adata
-The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations.
+The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
 
 #### 2.2. Automatic Cell-type Annotation
-This pipeline automatically annotates cell types using the SCSA method. It utilizes reference datasets such as CellMarker or PanglaoDB to assign cell types based on fold change and p-value thresholds. The annotated cell types are then visualized using embeddings such as UMAP, along with donor information. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable.
+This pipeline automatically annotates cell types using the SCSA method. It utilizes reference datasets such as CellMarker or PanglaoDB to assign cell types based on fold change and p-value thresholds. The annotated cell types are then visualized using embeddings such as UMAP, along with donor information. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable. [[script-url](./pipelines/services/cell_type_annotation.py)]
 
 #### 2.3. DGE Analysis
 
-The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as t-test, Wilcoxon, logistic regression, and t-test with overestimated variance. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases.
+The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as t-test, Wilcoxon, logistic regression, and t-test with overestimated variance. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
 
 ### 3. Dashboard
+
+In progress
+
+### 4. Results
 
 In progress
 
@@ -162,3 +168,7 @@ sh run_pipelines.sh
 # Run the dashboard
 
 ```
+
+## Conclusion
+
+The BioNets Project offers comprehensive pipelines for large-scale scRNA-seq data analysis, contributing to advancements in biomedical network science. By integrating automatic cell-type annotation and differential gene expression analysis, our project facilitates deeper insights into disease mechanisms. Furthermore, the interactive dashboard promises enhanced data exploration and comparison, empowering researchers with intuitive tools for comprehensive data interpretation and hypothesis generation.
