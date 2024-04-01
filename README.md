@@ -1,4 +1,23 @@
+> _**Disclaimer:** Necessary data, documents, and implemented pipeline for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
+
 ![Banner GIF](img/banner.gif)
+
+Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary data, documents, and implemented pipeline for the BioNets Project, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
+
+## Project Goals
+The core goals of the project are as follows:
+
+- Retrieve scRNA-seq data from case-control studies for one fixed disease.
+- Implemented and run pipelines for
+    - Clustering and automatic cell type annotation.
+    - Identification of DEGs, comparing cells from the same cell type between case and control.
+- Make a dashboard to interactively visualize the results.
+- (Possibly) Extend to > 1 diseases.
+
+This project consists of _**two**_ parts:
+
+1. scRNA-seq Analysis: Which consists of disease research, relevant data collection, automatic cell type annotation, and differentially expressed genes (DEGs) analysis.
+2. Dashboard: Preparing a web-based template to demonstrate the finding which should be interactive and easy to use.
 
 ## Environment Setup
 
