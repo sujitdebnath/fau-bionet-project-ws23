@@ -19,6 +19,44 @@ This project consists of _**two**_ parts:
 1. scRNA-seq Analysis: Which consists of disease research, relevant data collection, automatic cell type annotation, and differentially expressed genes (DEGs) analysis.
 2. Dashboard: Preparing a web-based template to demonstrate the finding which should be interactive and easy to use.
 
+## Project Structure
+
+```bash
+fau-bionet-project-ws23/
+├── dataset/                  # Data directory
+│   ├── disease_id1/          # Disease Name 1, e.g. Diabetes II
+│   │   ├── dataset_id1/      # Dataset 1 for disease 1
+│   │   │   ├── case/         # Case samples
+│   │   │   │   ├── barcodes.tsv.gz
+│   │   │   │   ├── features.tsv.gz
+│   │   │   │   └── matrix.mtx.gz
+│   │   │   └── control/      # Control samples
+│   │   │       ├── barcodes.tsv.gz
+│   │   │       ├── features.tsv.gz
+│   │   │       └── matrix.mtx.gz
+│   │   ├── dataset_id2/
+│   │   └── ...
+│   ├── disease_id2/          # Disease Name 2, e.g. MPN
+│   └── ...
+├── pipelines/                # Main pipeline modules
+│   ├── services/             # Pipeline services
+│   │   ├── adata_handler.py
+│   │   ├── adata_preprocessor.py
+│   │   ├── cell_type_annotation.py
+│   │   └── diff_gene_exp_analysis.py
+│   ├── run_pipelines.sh      # Script to run pipelines
+│   └── cleaner.sh            # Script to clean temporary files
+├── results/                  # Results directory
+│   ├── disease_id1/          # Store results for Disease 1
+│   │   ├── dataset_id1/      # Store results of dataset1
+│   │   ├── dataset_id2/      # Store results of dataset2
+│   │   └── ...
+│   ├── disease_id2/          # Store results for Disease 2
+│   └── ...
+├── dashboard/                # Dashboard directory
+└── README.md                 # Project documentation
+```
+
 ## Environment Setup
 
 ```bash
