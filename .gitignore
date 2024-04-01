@@ -6,6 +6,7 @@ pipelines/cache/
 pipelines/temp/
 pipelines/temp_adata/
 Cell_Annotation_and_DGE/
+Cell_Annotation_and_DGE/CellType_Annotation_with_DEG_Pipeline.ipynb
 
 # Ignore Mac DS_Store files
 .DS_Store
