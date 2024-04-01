@@ -22,7 +22,7 @@ This project consists of _**two**_ parts:
 ## Project Structure
 
 ```bash
-fau-bionet-project-ws23/
+fau-bionets-project-ws23
 ├── dataset/                            # Data directory
 │   ├── disease_id1/                    # Disease Name 1, e.g. Diabetes II
 │   │   ├── dataset_id1/                # Dataset 1 for disease 1
@@ -153,7 +153,7 @@ conda remove -n <conda_env_name> --all
 
 ```bash
 # Clone the repository
-git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
+git clone git@github.com:sujitdebnath/fau-bionets-project-ws23.git
 cd fau-bionets-project-ws23
 
 # Activate virtural environment
@@ -166,7 +166,7 @@ cd pipelines
 sh run_pipelines.sh
 
 # Run the dashboard
-
+<In progress>
 ```
 
 ## Conclusion
