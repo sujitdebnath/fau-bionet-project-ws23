@@ -57,47 +57,81 @@ fau-bionet-project-ws23/
 └── README.md                           # Project documentation
 ```
 
+## Project Details
+
+### 1. Dataset
+
+### 2. Pipelines
+
+#### 2.1. Preprocessing adata:
+#### 2.2. Automatic Cell-type Annotation:
+#### 2.3. DGE Analysis:
+
+### 3. Dashboard
+
 ## Environment Setup
 
+This section provides step-by-step instructions for setting up the required environment on Linux, and MacOS systems. Please note that the setup process for MacOS systems with Silicon-based processors may vary slightly.
+
+### Used Technology
+1. [Python3.x](https://www.python.org), and [Anaconda](https://anaconda.org) distribution (for Silicon Based MacOS)
+2. [Scanpy](https://scanpy.readthedocs.io/en/stable/) - it is a Python package and a scalable toolkit for analyzing single-cell gene expression data built jointly with [anndata](https://anndata.readthedocs.io/en/latest/).
+3. [Omicverse](https://omicverse.readthedocs.io/en/latest/) - Omicverse is the fundamental package for multi omics included bulk and single cell RNA-seq analysis with Python.
+
+### Linux
+
 ```bash
-git clone git@github.com:sujitdebnath/fau-bionets-project-ws23.git
+# Clone the repository
+git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
 cd fau-bionets-project-ws23
 
+# Create a virtual environment and activate
 python3 -m venv <env_name>
 source <env_name>/bin/activate
 
+# Upgrade pip
 pip install --upgrade pip
 
+# Install required Python packages
 pip install pandas numpy scipy scikit-learn seaborn matplotlib jupyter openpyxl scanpy anndata leidenalg louvain
 
-#-------------
-# CPU only
+# Install PyTorch, PyTorch Geometric and additional packages for CPU-only operations
 pip install torch===2.0.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 pip install torch_geometric
 pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cpu.html
 
+# Install Omicverse package
 pip install -U omicverse
-#-------------
 
+# [if needed] Deactivate and remove virtual environment
 deactivate
 rm -rf <env_name>
 ```
 
-MacOS Silicon Based
+### MacOS (Silicon Based)
 
 ```bash
-conda create -n bionets python=3.10
-conda activate bionets
+# Clone the repository
+git clone git@github.com:sujitdebnath/fau-bionet-project-ws23.git
+cd fau-bionets-project-ws23
 
+# Create a conda environment and activate
+conda create -n <conda_env_name> python=<python_version>
+conda activate <conda_env_name>
+
+# Install required Python packages
 conda install -c conda-forge pandas numpy scipy scikit-learn seaborn matplotlib jupyterlab scanpy anndata pymde python-igraph leidenalg
 pip install louvain
 
-# https://omicverse.readthedocs.io/en/latest/Installation_guild/
+# Install PyTorch, PyTorch Geometric and additional packages for CPU-only operations
 conda install pytorch torchvision torchaudio cpuonly -c pytorch
 pip install torch_geometric
 conda install s_gd2 -c conda-forge
+
+# Install Omicverse package
 pip install -U omicverse
 
+# [if needed] Deactivate and remove conda environment
 conda deactivate
 conda remove -n bionets --all
 ```
