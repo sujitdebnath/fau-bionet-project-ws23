@@ -1,11 +1,11 @@
-> _**Disclaimer:** All necessary files, including data, documents, and implemented pipeline for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
+> _**Disclaimer:** All necessary files, including data, documents, pipelines, and etc for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
 
 ![Banner GIF](img/banner.gif)
 
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
-## Project Contributors:
-- [Farzam Taghipour](https://www.linkedin.com/), Graduate Student in Artificial Intelligence at FAU
+## Project Contributors
+- [Farzam Taghipour](https://www.linkedin.com/in/farzamtaghipour/), Graduate Student in Artificial Intelligence at FAU
 - [Sujit Debnath](https://www.linkedin.com/in/sujit-debnath/), Graduate Student in Artificial Intelligence at FAU
 
 ## Project Goals
