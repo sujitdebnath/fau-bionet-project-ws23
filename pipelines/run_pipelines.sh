@@ -45,6 +45,7 @@ for disease_id in $diseases; do
         python3 "${PROJECT_DIR}/pipelines/services/cell_type_annotation.py" \
             --disease_id "${disease_id}" \
             --dataset_id "${dataset_id}" \
+            --anno_methods "scsa" "metatime" \
             --cellmarker \
             --panglaodb \
             --foldchange 1.5 \
