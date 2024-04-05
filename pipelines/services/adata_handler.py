@@ -69,7 +69,9 @@ def load_data_case_and_control(disease_id: str, dataset_id: str) -> sc.AnnData:
         elif control_dir_path is not None:
             adata = adata_control
         
-        # adata.obs_names_make_unique()
+        # make indices unique for the whole adata object
+        # as the case vs control dataset is concatenated, the duplicate indices can occur
+        adata.obs_names_make_unique()
     
     return adata
 
