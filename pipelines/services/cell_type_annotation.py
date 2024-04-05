@@ -59,15 +59,7 @@ def apply_cell_type_anno_metatime(adata: sc.AnnData) -> None:
     projmat, _, _ = annotator.annotator(projmat, mecnamedict, gcol='overcluster')
     projmat       = projmat[['overcluster', 'MetaTiME_overcluster']]
     projmat       = projmat[['MetaTiME_overcluster']]
-
-    print(adata.obs.shape, projmat.shape)
-    # [issue] Check for duplicate indices in projmat
-    duplicate_indices = projmat.index[projmat.index.duplicated()]
-    if len(duplicate_indices) > 0:
-        print(f"===============> Duplicate indices found in projmat: {len(duplicate_indices)} <===============")
-        projmat = projmat.groupby(projmat.index).first() # Remove duplicate indices except one
-    
-    adata = annotator.saveToAdata(adata, projmat)
+    adata         = annotator.saveToAdata(adata, projmat)
 
     adata.obs['MetaTiME']       = adata.obs['MetaTiME_overcluster'].str.split(': ').str.get(1)
     adata.obs['Major_MetaTiME'] = adata.obs['MetaTiME'].str.split('_').str.get(0)
@@ -187,14 +179,14 @@ def run_cell_type_annotation() -> None:
         apply_cell_type_anno_metatime(adata=adata)
         plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
                         plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='metatime_major.png',
-                        plot_title='MetaTiME Celltype Annotation (major)',
+                        plot_title='MetaTiME Celltype Annotation (major)', xlabel='umap1', ylabel='umap2',
                         basis='X_mde', color=['Major_MetaTiME'], palette=ov.utils.palette(),
-                        frameon=False, ncols=1, legend_fontoutline=0.01)
+                        frameon='small', ncols=1, legend_fontoutline=0.01)
         plot_embeddings(adata=adata, disease_id=disease_id, dataset_id=dataset_id,
                         plot_function=ov.utils.embedding, fig_size=(4,4), plot_fname='metatime_minor.png',
-                        plot_title='MetaTiME Celltype Annotation (minor)',
+                        plot_title='MetaTiME Celltype Annotation (minor)', xlabel='umap1', ylabel='umap2',
                         basis='X_mde', color=['MetaTiME'], palette=sns.color_palette("tab20c", 50).as_hex(),
-                        frameon=False, ncols=1, legend_fontoutline=0.01)
+                        frameon='small', ncols=1, legend_fontoutline=0.01)
 
     # Save adata
     adata_handler.save_adata(adata=adata, disease_id=disease_id, dataset_id=dataset_id)
