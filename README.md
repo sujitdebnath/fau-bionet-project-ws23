@@ -1,8 +1,12 @@
-> _**Disclaimer:** Necessary data, documents, and implemented pipeline for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
+> _**Disclaimer:** All necessary files, including data, documents, and implemented pipeline for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
 
 ![Banner GIF](img/banner.gif)
 
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
+
+## Project Contributors:
+- [Farzam Taghipour](https://www.linkedin.com/), Graduate Student in Artificial Intelligence at FAU
+- [Sujit Debnath](https://www.linkedin.com/in/sujit-debnath/), Graduate Student in Artificial Intelligence at FAU
 
 ## Project Goals
 The core goals of the project are as follows:
@@ -60,9 +64,9 @@ fau-bionets-project-ws23
 ## Project Details
 
 ### 1. Dataset
-Two datasets of two diseases, type II Diabetes Mellitus and Myeloproliferative Neoplasm (MPN) have been obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) repository. Details are as follows,
+Two datasets of two diseases, such as type II Diabetes Mellitus and Myeloproliferative Neoplasm (MPN) have been obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) repository. Details are as follows,
 
-- **Diabetes Mellitus Type II:** This dataset investigates systemic immunological modifications caused by type 2 diabetes mellitus (DM) in patients diagnosed with periodontitis (PD). The research, conducted via single-cell RNA sequencing (scRNA-seq) analysis of peripheral blood mononuclear cells (PBMCs), aims to compare the immune response between patients with PD only and those with both PD and DM. Through this study, researchers seek to enhance understanding of the complex immunological relationships between PD and DM. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244515)]
+- **Diabetes Mellitus Type II:** This dataset investigates systemic immunological modifications caused by type 2 diabetes mellitus (DM) in patients diagnosed with periodontitis (PD). The research, conducted via single-cell RNA sequencing (scRNA-seq) analysis of peripheral blood mononuclear cells (PBMCs), aims to compare the immune response between patients with PD only and those with both PD and DM (PDDM). Through this study, researchers seek to enhance understanding of the complex immunological relationships between PD and DM. Sample distribution: _11 healthy control subjects, 10 patients with PD without DM, and 6 patients with PDDM_. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244515)]
 
 - **Myeloproliferative Neoplasm (MPN):**  This dataset encompasses a comprehensive analysis of platelets derived from patients diagnosed with MPNs, particularly essential thrombocythemia (ET). The study, conducted by researchers, revealed significant metabolic alterations mediating aberrant platelet activity and inflammation in MPNs through single-cell RNA sequencing (scRNA-Seq) analysis of primary PBMC samples. Notably, transcripts related to platelet activation, mTOR, and oxidative phosphorylation (OXPHOS) were found to be enriched in ET platelets. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244589)]
 
@@ -70,17 +74,29 @@ In both of them, the experiment involved Homo sapiens as the organism and utiliz
 
 ### 2. Pipelines
 
-The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with specific case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, refer to the environment setup section.
+The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, please refer to the environment setup section.
 
 #### 2.1. Preprocessing adata
 The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
 
 #### 2.2. Automatic Cell-type Annotation
-This pipeline automatically annotates cell types using the SCSA method. It utilizes reference datasets such as CellMarker or PanglaoDB to assign cell types based on fold change and p-value thresholds. The annotated cell types are then visualized using embeddings such as UMAP, along with donor information. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable. [[script-url](./pipelines/services/cell_type_annotation.py)]
+In this stage, automatic cell types annotation has been done using two methods, such as, [SCSA](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full) and [MetaTiME](https://www.nature.com/articles/s41467-023-38333-8).
+
+In this stage, automatic cell type annotation has been performed using two methods: SCSA and MetaTiME.
+
+#### 2.2. Automatic Cell-type Annotation
+
+In this stage, automatic cell type annotation has been performed using two methods: SCSA and MetaTiME.
+
+- **SCSA:** SCSA (Single-Cell Score Annotation) is an automatic tool for annotating cell types from scRNA-seq data. It employs a score annotation model that combines differentially expressed genes (DEGs) and confidence levels of cell markers from both known and user-defined information. This method eliminates the need for manual strategies, providing consistent and precise cell type annotations. Evaluation on real scRNA-seq datasets demonstrates SCSA's ability to assign cells to correct types with desirable precision. [[original-paper](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full)]
+
+- **MetaTiME:** MetaTiME (MetaTiME-TME) is another method utilized for automatic cell type annotation. It leverages pre-trained MeC models and functional annotations to project single cells into MeC space, where cell states are annotated based on MeC scores. This approach enables fine-grained cell state annotation, facilitating a deeper understanding of the cellular composition of complex tissues and environments. [[original-paper](https://www.nature.com/articles/s41467-023-38333-8)]
+
+After annotated cell types using SCSA and MetaTiME, they are then visualized using embeddings such as UMAP. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable. [[script-url](./pipelines/services/cell_type_annotation.py)]
 
 #### 2.3. DGE Analysis
 
-The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as t-test, Wilcoxon, logistic regression, and t-test with overestimated variance. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
+The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as _**t-test, wilcoxon rank-sum, logistic regression, and t-test with overestimated variance**_. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
 
 ### 3. Dashboard
 
@@ -92,8 +108,8 @@ In progress
 
 ## Environment Setup
 
-This section provides step-by-step instructions for setting up the required environment on Linux, and MacOS systems. Please note that the setup process for MacOS systems with Silicon-based processors may vary slightly.
-
+This section provides step-by-step instructions for setting up the required environment on Linux, or MacOS systems. Please note that the setup process for MacOS systems with Silicon-based processors may vary slightly.
+ta
 ### Used Technology
 1. [Python3.x](https://www.python.org), and [Anaconda](https://anaconda.org) distribution (for Silicon Based MacOS)
 2. [Scanpy](https://scanpy.readthedocs.io/en/stable/) - it is a Python package and a scalable toolkit for analyzing single-cell gene expression data built jointly with [anndata](https://anndata.readthedocs.io/en/latest/).
@@ -171,4 +187,4 @@ sh run_pipelines.sh
 
 ## Conclusion
 
-The BioNets Project offers comprehensive pipelines for large-scale scRNA-seq data analysis, contributing to advancements in biomedical network science. By integrating automatic cell-type annotation and differential gene expression analysis, our project facilitates deeper insights into disease mechanisms. Furthermore, the interactive dashboard promises enhanced data exploration and comparison, empowering researchers with intuitive tools for comprehensive data interpretation and hypothesis generation.
+The BioNets project offers comprehensive pipelines for large-scale scRNA-seq data analysis, contributing to advancements in biomedical network science. By integrating automatic cell-type annotation and differential gene expression analysis, our project facilitates deeper insights into disease mechanisms. Furthermore, the interactive dashboard promises enhanced data exploration and comparison, empowering researchers with intuitive tools for comprehensive data interpretation and hypothesis generation.
