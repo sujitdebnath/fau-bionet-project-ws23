@@ -5,10 +5,12 @@
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
 ## Project Contributors
-- [Farzam Taghipour](https://www.linkedin.com/in/farzamtaghipour/), Graduate Student in Artificial Intelligence at FAU
-- [Sujit Debnath](https://www.linkedin.com/in/sujit-debnath/), Graduate Student in Artificial Intelligence at FAU
+
+- [Farzam Taghipour](https://www.linkedin.com/in/farzamtaghipour/), Graduate Student in Artificial Intelligence at FAU Erlangen-Nürnberg
+- [Sujit Debnath](https://www.linkedin.com/in/sujit-debnath/), Graduate Student in Artificial Intelligence at FAU Erlangen-Nürnberg
 
 ## Project Goals
+
 The core goals of the project are as follows:
 
 - Retrieve scRNA-seq data from case-control studies for one fixed disease.
@@ -73,14 +75,12 @@ Two datasets of two diseases, such as type II Diabetes Mellitus and Myeloprolife
 In both of them, the experiment involved Homo sapiens as the organism and utilized expression profiling by high throughput sequencing as the primary experimental method. Case vs. control datasets for each disease were prepared by categorizing individuals into two groups: cases and controls. Cases consisted of individuals diagnosed with the respective disease (MPNs or Diabetes II), while controls comprised individuals without the disease. This stratification allowed for comparative analysis between the two groups to identify disease-associated features and patterns within the scRNA-seq data.
 
 ### 2. Pipelines
-
 The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, please refer to the environment setup section.
 
 #### 2.1. Preprocessing adata
 The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
 
 #### 2.2. Automatic Cell-type Annotation
-
 In this stage, automatic cell type annotation has been performed using two methods: SCSA and MetaTiME.
 
 - **SCSA:** SCSA (Single-Cell Score Annotation) is an automatic tool for annotating cell types from scRNA-seq data. It employs a score annotation model that combines differentially expressed genes (DEGs) and confidence levels of cell markers from both known and user-defined information. This method eliminates the need for manual strategies, providing consistent and precise cell type annotations. Evaluation on real scRNA-seq datasets demonstrates SCSA's ability to assign cells to correct types with desirable precision. [[original-paper](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full)]
@@ -90,21 +90,18 @@ In this stage, automatic cell type annotation has been performed using two metho
 After annotated cell types using SCSA and MetaTiME, they are then visualized using embeddings such as UMAP. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable. [[script-url](./pipelines/services/cell_type_annotation.py)]
 
 #### 2.3. DGE Analysis
-
 The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as _**t-test, wilcoxon rank-sum, logistic regression, and t-test with overestimated variance**_. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
 
 ### 3. Dashboard
-
 In progress
 
 ### 4. Results
-
 In progress
 
 ## Environment Setup
 
 This section provides step-by-step instructions for setting up the required environment on Linux, or MacOS systems. Please note that the setup process for MacOS systems with Silicon-based processors may vary slightly.
-ta
+
 ### Used Technology
 1. [Python3.x](https://www.python.org), and [Anaconda](https://anaconda.org) distribution (for Silicon Based MacOS)
 2. [Scanpy](https://scanpy.readthedocs.io/en/stable/) - it is a Python package and a scalable toolkit for analyzing single-cell gene expression data built jointly with [anndata](https://anndata.readthedocs.io/en/latest/).
@@ -185,10 +182,9 @@ cd pipelines
 sh run_pipelines.sh
 
 # Run the dashboard
-cd dashboard
-streamlit run streamlit_app.py
+streamlit run dashboard/streamlit_app.py
 # or
-python3 -m streamlit run streamlit_app.py
+python3 -m streamlit run dashboard/streamlit_app.py
 ```
 
 ## Conclusion
