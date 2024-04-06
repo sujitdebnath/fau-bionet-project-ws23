@@ -1,6 +1,6 @@
 > _**Disclaimer:** All necessary files, including data, documents, pipelines, and etc for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
 
-![Banner GIF](img/banner.gif)
+![Banner GIF](img/banner2.gif)
 
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
@@ -136,6 +136,9 @@ pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -
 # Install Omicverse package
 pip install -U omicverse
 
+# Install Streamlit for Dashboard
+pip install streamlit
+
 # [if needed] Deactivate and remove virtual environment
 deactivate
 rm -rf <env_name>
@@ -160,6 +163,9 @@ conda install s_gd2 -c conda-forge
 # Install Omicverse package
 pip install -U omicverse
 
+# Install Streamlit for Dashboard
+conda install -c conda-forge streamlit
+
 # [if needed] Deactivate and remove conda environment
 conda deactivate
 conda remove -n <conda_env_name> --all
@@ -172,7 +178,8 @@ conda remove -n <conda_env_name> --all
 git clone git@github.com:sujitdebnath/fau-bionets-project-ws23.git
 cd fau-bionets-project-ws23
 
-# Activate virtural environment
+# Create a venv and install everything
+# and then activate virtural environment
 source <env_name>/bin/activate
 # or conda environment
 conda activate <conda_env_name>
@@ -182,7 +189,10 @@ cd pipelines
 sh run_pipelines.sh
 
 # Run the dashboard
-<In progress>
+cd dashboard
+streamlit run streamlit_app.py
+# or
+python3 -m streamlit run streamlit_app.py
 ```
 
 ## Conclusion
