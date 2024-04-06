@@ -20,8 +20,8 @@ The core goals of the project are as follows:
 
 This project consists of _**two**_ parts:
 
-1. scRNA-seq Analysis: Which consists of disease research, relevant data collection, automatic cell type annotation, and differentially expressed genes (DEGs) analysis.
-2. Dashboard: Preparing a web-based template to demonstrate the finding which should be interactive and easy to use.
+1. **scRNA-seq Analysis:** Which consists of disease research, relevant data collection, automatic cell type annotation, and differentially expressed genes (DEGs) analysis.
+2. **Dashboard:** Preparing a web-based template to demonstrate the finding which should be interactive and easy to use.
 
 ## Project Structure
 
@@ -109,6 +109,7 @@ ta
 1. [Python3.x](https://www.python.org), and [Anaconda](https://anaconda.org) distribution (for Silicon Based MacOS)
 2. [Scanpy](https://scanpy.readthedocs.io/en/stable/) - it is a Python package and a scalable toolkit for analyzing single-cell gene expression data built jointly with [anndata](https://anndata.readthedocs.io/en/latest/).
 3. [Omicverse](https://omicverse.readthedocs.io/en/latest/) - Omicverse is the fundamental package for multi omics included bulk and single cell RNA-seq analysis with Python.
+4. [Streamlit](https://streamlit.io) - Streamlit is a promising open-source Python library, which enables developers to build attractive user interfaces in no time.
 
 ### Linux
 
