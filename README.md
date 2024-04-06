@@ -80,8 +80,6 @@ The overall pipeline consists of three key stages: preprocessing adata, automati
 The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
 
 #### 2.2. Automatic Cell-type Annotation
-In this stage, automatic cell types annotation has been done using two methods, such as, [SCSA](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full) and [MetaTiME](https://www.nature.com/articles/s41467-023-38333-8).
-
 In this stage, automatic cell type annotation has been performed using two methods: SCSA and MetaTiME.
 
 #### 2.2. Automatic Cell-type Annotation
