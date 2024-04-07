@@ -99,14 +99,14 @@ After annotated cell types using SCSA and MetaTiME, they are then visualized usi
 The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as _**t-test, wilcoxon rank-sum, logistic regression, and t-test with overestimated variance**_. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
 
 ### 3. Dashboard
-Our project features a dynamic dashboard built on [Streamlit](https://streamlit.io), offering multiple functionalities:
+Our project features a dynamic dashboard built on [Streamlit](https://streamlit.io), offering multiple functionalities.
 
 - **Homepage:** Welcome screen providing an overview of the project and its objectives.
 - **Individual Results Showcase:** Detailed display of results for each dataset, allowing users to explore specific findings.
 - **Comparison Functionality:** Enables users to compare results across datasets for each disease, facilitating insightful analysis.
 - **Interactive Summary Results:** Summarized overview of key findings, allowing for quick insights into the data.
 
-Some snapshots of the dashboard are given below:
+Some snapshots of the dashboard are given below. And for video demostration please click [here](./docs/streamlit_dashboard.mov).
 
 <div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <div style="flex: 1;">
