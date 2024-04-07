@@ -60,8 +60,11 @@ def standardize_cell_type_names(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     adata_dfs             = combine_all_adata_dfs()
     adata_standardize_dfs = standardize_cell_type_names(adata_dfs)
-    print(f"Combined df shape: {adata_dfs.shape}")
     adata_standardize_dfs.to_csv(os.path.join(BASE_DIR, 'dashboard', 'cell_anno_res.csv'))
+    print(f"Combined df shape: {adata_dfs.shape}")
+    print(adata_standardize_dfs['scsa_celltype_cellmarker'].unique())
+    print(adata_standardize_dfs['scsa_celltype_panglaodb'].unique())
+    print(adata_standardize_dfs['Major_MetaTiME'].unique())
 
 
 if __name__ == '__main__':
