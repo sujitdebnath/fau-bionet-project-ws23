@@ -1,6 +1,6 @@
 > _**Disclaimer:** All necessary files, including data, documents, pipelines, and etc for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
 
-![Banner GIF](img/banner2.gif)
+![Banner GIF](docs/banner.gif)
 
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
@@ -88,9 +88,9 @@ The preprocessing pipeline applies quantity control to filter low-quality observ
 #### 2.2. Automatic Cell-type Annotation
 In this stage, automatic cell type annotation has been performed using two methods: SCSA and MetaTiME.
 
-- **SCSA:** SCSA (Single-Cell Score Annotation) is an automatic tool for annotating cell types from scRNA-seq data. It employs a score annotation model that combines differentially expressed genes (DEGs) and confidence levels of cell markers from both known and user-defined information. This method eliminates the need for manual strategies, providing consistent and precise cell type annotations. Evaluation on real scRNA-seq datasets demonstrates SCSA's ability to assign cells to correct types with desirable precision. [[original-paper](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full)]
+- **SCSA:** SCSA is an automatic tool for annotating cell types from scRNA-seq data. It employs a score annotation model that combines differentially expressed genes (DEGs) and confidence levels of cell markers from both known and user-defined information. This method eliminates the need for manual strategies, providing consistent and precise cell type annotations. Evaluation on real scRNA-seq datasets demonstrates SCSA's ability to assign cells to correct types with desirable precision. [[original-paper](https://www.frontiersin.org/journals/genetics/articles/10.3389/fgene.2020.00490/full)]
 
-- **MetaTiME:** MetaTiME (MetaTiME-TME) is another method utilized for automatic cell type annotation. It leverages pre-trained MeC models and functional annotations to project single cells into MeC space, where cell states are annotated based on MeC scores. This approach enables fine-grained cell state annotation, facilitating a deeper understanding of the cellular composition of complex tissues and environments. [[original-paper](https://www.nature.com/articles/s41467-023-38333-8)]
+- **MetaTiME:** MetaTiME is another method utilized for automatic cell type annotation. It leverages pre-trained MeC models and functional annotations to project single cells into MeC space, where cell states are annotated based on MeC scores. This approach enables fine-grained cell state annotation, facilitating a deeper understanding of the cellular composition of complex tissues and environments. [[original-paper](https://www.nature.com/articles/s41467-023-38333-8)]
 
 After annotated cell types using SCSA and MetaTiME, they are then visualized using embeddings such as UMAP. Additionally, the Ratio of Observed to Expected cell numbers (Ro/e) is calculated to quantify tissue preferences of each cluster, if applicable. [[script-url](./pipelines/services/cell_type_annotation.py)]
 
@@ -98,7 +98,16 @@ After annotated cell types using SCSA and MetaTiME, they are then visualized usi
 The differential gene expression (DGE) analysis pipeline performs gene expression analysis using various methods such as _**t-test, wilcoxon rank-sum, logistic regression, and t-test with overestimated variance**_. It ranks genes based on their expression differences between groups (e.g., case vs. control) for each donor. The results are stored in a CSV file containing information such as gene names, target cell types, donors, method used, scores, adjusted p-values, and log-fold changes. This analysis aids in identifying genes associated with specific cell types in the context of different diseases. [[script-url](./pipelines/services/diff_gene_exp_analysis.py)]
 
 ### 3. Dashboard
-In progress
+Our project features a dynamic dashboard built on [Streamlit](https://streamlit.io), offering multiple functionalities:
+
+- **Homepage:** Welcome screen providing an overview of the project and its objectives.
+- **Individual Results Showcase:** Detailed display of results for each dataset, allowing users to explore specific findings.
+- **Comparison Functionality:** Enables users to compare results across datasets for each diseases, facilitating insightful analysis.
+- **Interactive Summary Results:** Summarized overview of key findings, allowing for quick insights into the data.
+
+Watch the video demonstration of the dashboard below:
+
+![Dashboard](docs/streamlit_dashboard.mov)
 
 ### 4. Results
 In progress
