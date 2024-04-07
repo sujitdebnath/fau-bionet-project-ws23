@@ -55,24 +55,24 @@ with col5:
 # ---------- Submit Button Mechanism ----------
 if click_submit:
     results_dir = os.path.join(BASE_RES_DIR, disease_id, dataset_id)
-    st.header(f"Results for {dataset_id.capitalize()} of {disease_id.upper()} Disease")
+    st.markdown(f'<h4 style="text-align: center; color: black;">Results for {dataset_id.capitalize()} of {disease_id.upper()} Disease</h1>', unsafe_allow_html=True)
 
-    st.subheader("Donor (Case vs Control) and Clustering")
+    st.markdown("#### 1. Donor (Case vs Control) and Clustering")
     col1, col2 = st.columns(2)
     with col1:
         st.image(resize_image(img_path=os.path.join(results_dir, 'donor_cells.png'), ratio=0.8))
     with col2:
         st.image(resize_image(img_path=os.path.join(results_dir, 'leiden.png'), ratio=0.8))
 
-    st.subheader("Cell Annotation - SCSA")
+    st.markdown("#### 2. Cell Annotation - SCSA")
     col1, col2 = st.columns(2)
     with col1:
         st.image(resize_image(img_path=os.path.join(results_dir, 'scsa_cellmarker.png'), ratio=0.8))
     with col2:
         st.image(resize_image(img_path=os.path.join(results_dir, 'scsa_panglaodb.png'), ratio=0.6))
     
-    st.subheader("Cell Annotation - MetaTiME")
-    st.image(os.path.join(results_dir, 'metatime_minor.png'))
+    st.markdown("#### 3. Cell Annotation - MetaTiME and Ro/e Viz (if available)")
+    st.image(resize_image(img_path=os.path.join(results_dir, 'metatime_minor.png'), ratio=0.7))
 
     col1, col2 = st.columns(2)
     with col1:
@@ -84,6 +84,6 @@ if click_submit:
             st.image(resize_image(img_path=roe_img, ratio=0.75))
     
     dge_results = pd.read_csv(os.path.join(results_dir, 'dge_analysis_result.csv'))
-    st.subheader("Differential Gene Expression Analysis Results")
+    st.markdown("#### 4. Differential Gene Expression Analysis Results")
     st.dataframe(dge_results, height=1010, use_container_width=True, hide_index=True)
 # ---------- Submit Button Mechanism ----------
