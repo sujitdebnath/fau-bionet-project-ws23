@@ -78,7 +78,7 @@ echo "----------------------------------- Summary of Cell Annotation Ended -----
 DIRS_TO_REMOVE=(
     "${PROJECT_DIR}/pipelines/cache"
     "${PROJECT_DIR}/pipelines/temp"
-    # "${PROJECT_DIR}/pipelines/temp_adata"
+    "${PROJECT_DIR}/pipelines/temp_adata"
 )
 
 # Remove directories and files
