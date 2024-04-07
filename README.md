@@ -50,6 +50,7 @@ fau-bionets-project-ws23
 │   │   ├── adata_preprocessor.py       # Script for preprocessing
 │   │   ├── cell_type_annotation.py     # Script for automatic cell annotation
 │   │   └── diff_gene_exp_analysis.py   # Script for DGE analysis
+│   ├── summary_cell_anno.py            # Script for generating summary results for cell annotation
 │   ├── run_pipelines.sh                # Script for running the whole pipeline
 │   └── cleaner.sh                      # Script for cleaning temporary files
 ├── results/                            # Results directory
@@ -59,7 +60,11 @@ fau-bionets-project-ws23
 │   │   └── ...
 │   ├── disease_id2/                    # Results directory of Disease 2
 │   └── ...
-├── dashboard/                          # Dashboard directory
+├── dashboard/                          # Streamlit Dashboard directory
+│   ├── .streamlit/                     # Contains Streamlit config file
+│   ├── pages/                          # Contains pages of Dashboard
+│   ├── _Home.py                        # Home page of Dashboard
+│   └── cell_anno_res.csv               # Contains summary results of cell annotation
 └── README.md                           # Project documentation
 ```
 
@@ -119,7 +124,7 @@ source <env_name>/bin/activate
 pip install --upgrade pip
 
 # Install required Python packages
-pip install pandas numpy scipy scikit-learn seaborn matplotlib jupyter openpyxl scanpy anndata leidenalg louvain
+pip install pandas numpy scipy scikit-learn seaborn matplotlib jupyter openpyxl scanpy anndata leidenalg louvain plotly
 
 # Install PyTorch, PyTorch Geometric and additional packages for CPU-only operations
 pip install torch===2.0.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
@@ -146,7 +151,7 @@ conda activate <conda_env_name>
 
 # Install required Python packages
 conda install -c conda-forge pandas numpy scipy scikit-learn seaborn matplotlib jupyterlab scanpy anndata pymde python-igraph leidenalg
-pip install louvain
+pip install louvain plotly
 
 # Install PyTorch, PyTorch Geometric and additional packages for CPU-only operations
 conda install pytorch torchvision torchaudio cpuonly -c pytorch
