@@ -69,11 +69,16 @@ for disease_id in $diseases; do
     done
 done
 
+# Run the summary scripts
+echo "----------------------------------- Summary of Cell Annotation Started -----------------------------------"
+python3 "${PROJECT_DIR}/pipelines/summary_cell_anno.py"
+echo "----------------------------------- Summary of Cell Annotation Ended -----------------------------------"
+
 # Unnecessary directories and files to remove
 DIRS_TO_REMOVE=(
     "${PROJECT_DIR}/pipelines/cache"
     "${PROJECT_DIR}/pipelines/temp"
-    "${PROJECT_DIR}/pipelines/temp_adata"
+    # "${PROJECT_DIR}/pipelines/temp_adata"
 )
 
 # Remove directories and files
