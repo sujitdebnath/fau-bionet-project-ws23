@@ -4,6 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import plotly.graph_objects as go
 
 BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_RES_DIR  = os.path.join(BASE_DIR, 'results')
@@ -11,13 +12,18 @@ BASE_RES_DIR  = os.path.join(BASE_DIR, 'results')
 def read_csv(csv_fpath):
     return pd.read_csv(csv_fpath)
 
-def cell_anno_box_plot(df, cell_anno_method):
+def map_cell_anno_method_to_col_name(cell_anno_method):
     if cell_anno_method == "SCSA - cellmarker":
         cell_anno_col_name = 'scsa_celltype_cellmarker'
     elif cell_anno_method == "SCSA - panglaodb":
         cell_anno_col_name = 'scsa_celltype_panglaodb'
     elif cell_anno_method == "MetaTiME":
         cell_anno_col_name = 'Major_MetaTiME'
+    
+    return cell_anno_col_name
+
+def cell_anno_box_plot(df, cell_anno_method):
+    cell_anno_col_name = map_cell_anno_method_to_col_name(cell_anno_method)
     
     # Aggregate counts of cell types for each disease and dataset
     agg_df = df.groupby(['disease_id', 'dataset_id', cell_anno_col_name]).size().reset_index(name='count')
@@ -50,12 +56,7 @@ def cell_anno_box_plot(df, cell_anno_method):
     return fig
 
 def cell_anno_box_plot2(df, cell_anno_method):
-    if cell_anno_method == "SCSA - cellmarker":
-        cell_anno_col_name = 'scsa_celltype_cellmarker'
-    elif cell_anno_method == "SCSA - panglaodb":
-        cell_anno_col_name = 'scsa_celltype_panglaodb'
-    elif cell_anno_method == "MetaTiME":
-        cell_anno_col_name = 'Major_MetaTiME'
+    cell_anno_col_name = map_cell_anno_method_to_col_name(cell_anno_method)
     
     # Set the style
     sns.set_style("whitegrid")
@@ -87,6 +88,39 @@ def cell_anno_box_plot2(df, cell_anno_method):
     plt.ylabel('Count')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
+
+    return fig
+
+import plotly.graph_objects as go
+
+def cell_anno_heatmap(df, disease_id, anno_method1, anno_method2):
+    cell_anno_col1 = map_cell_anno_method_to_col_name(anno_method1)
+    cell_anno_col2 = map_cell_anno_method_to_col_name(anno_method2)
+
+    # Filter data by disease_id
+    df_filtered = df[df['disease_id'] == disease_id]
+
+    # Compute the co-occurrence matrix
+    co_occurrence_matrix = df_filtered.groupby([cell_anno_col1, cell_anno_col2]).size().unstack(fill_value=0)
+
+    # Create a Plotly heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=co_occurrence_matrix.values,
+        x=co_occurrence_matrix.columns,
+        y=co_occurrence_matrix.index,
+        colorscale='Viridis',  # Choose a color scale
+        hoverongaps=False  # Disable hover on gaps
+    ))
+
+    # Customize layout
+    fig.update_layout(
+        title=f"Cell Type Co-occurrence Heatmap for {disease_id.upper()} Disease",
+        xaxis_title=anno_method2,
+        yaxis_title=anno_method1,
+        xaxis=dict(side="top"),  # Display x-axis on top
+        height=800,
+        width=800
+    )
 
     return fig
 
@@ -158,15 +192,35 @@ with col4:
 # ---------- Summary of Cell Annotation ----------
 st.markdown("#### 1. Summary of Cell type Annotation")
 
+# ---------- Summary 1 ----------
 st.markdown("##### 1.1. Distribution of Cell Types (unknown labels excluded)")
 cell_anno_methods = ['SCSA - cellmarker', 'SCSA - panglaodb', 'MetaTiME']
-cell_anno_methods_box = st.selectbox('Select Cell-type Annotation Method', cell_anno_methods)
+cell_anno_methods_box = st.selectbox('Select Cell-type Annotation Method', cell_anno_methods, key='1')
 
 cell_anno_df = read_csv(csv_fpath=os.path.join(BASE_DIR, 'dashboard', 'cell_anno_res.csv'))
 # st.pyplot(cell_anno_box_plot2(df=cell_anno_df, cell_anno_method=cell_anno_methods_box))
 st.plotly_chart(cell_anno_box_plot(df=cell_anno_df, cell_anno_method=cell_anno_methods_box), use_container_width=True)
+# ---------- Summary 1 ----------
 
+# ---------- Summary 2 ----------
 st.markdown("##### 1.2. Heatmap of Cell Type Co-occurrence")
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    disease_id = st.selectbox('Select Disease', sorted(disease_ids))
+with col2:
+    cell_anno_methods_box1 = st.selectbox('Select 1st Annotation Method', cell_anno_methods, key='2')
+with col3:
+    cell_anno_methods2     = [anno_method for anno_method in cell_anno_methods if anno_method != cell_anno_methods_box1]
+    cell_anno_methods_box2 = st.selectbox('Select 2nd Annotation Method', cell_anno_methods2, key='3')
+
+st.plotly_chart(cell_anno_heatmap(
+                    df=cell_anno_df,
+                    disease_id=disease_id,
+                    anno_method1=cell_anno_methods_box1,
+                    anno_method2=cell_anno_methods_box2),
+                use_container_width=True)
+# ---------- Summary 2 ----------
 # ---------- Summary of Cell Annotation ----------
 
 # ---------- Summary of DGE Analysis ----------
