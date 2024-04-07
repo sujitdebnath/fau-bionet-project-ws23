@@ -67,7 +67,7 @@ def perform_diff_gene_exp_analysis(
     
     all_results.to_csv(os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id, f'dge_analysis_result.csv'), index=False)
 
-def run_dge_analysis() -> None:
+def main() -> None:
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -88,4 +88,4 @@ def run_dge_analysis() -> None:
 
 
 if __name__ == '__main__':
-    run_dge_analysis()
+    main()

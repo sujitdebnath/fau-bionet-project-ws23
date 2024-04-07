@@ -50,7 +50,7 @@ def apply_clustering(adata: sc.AnnData, cluster_mode: str) -> sc.AnnData:
     
     return adata
 
-def run_adata_preprocessing() -> None:
+def main() -> None:
     parser = argparse.ArgumentParser(description='Data Preprocessor Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -89,4 +89,4 @@ def run_adata_preprocessing() -> None:
 
 
 if __name__ == '__main__':
-    run_adata_preprocessing()
+    main()

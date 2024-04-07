@@ -86,7 +86,7 @@ def save_adata(adata: sc.AnnData, disease_id: str, dataset_id: str) -> None:
         print(f"Failed: Error while saving AnnData object. {str(e)}")
         sys.exit(1)
 
-def run_adata_handler() -> None:
+def main() -> None:
     parser = argparse.ArgumentParser(description='Data Handler Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -103,4 +103,4 @@ def run_adata_handler() -> None:
 
 
 if __name__ == '__main__':
-    run_adata_handler()
+    main()

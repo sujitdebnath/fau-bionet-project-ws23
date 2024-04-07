@@ -122,7 +122,7 @@ def plot_roe(roe: pd.DataFrame, disease_id: str, dataset_id: str,):
     plt.title('Ro/e', fontsize=12)
     plt.savefig(os.path.join(figures_dir, 'roe.png'), bbox_inches='tight')
 
-def run_cell_type_annotation() -> None:
+def main() -> None:
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
@@ -193,4 +193,4 @@ def run_cell_type_annotation() -> None:
 
 
 if __name__ == '__main__':
-    run_cell_type_annotation()
+    main()
