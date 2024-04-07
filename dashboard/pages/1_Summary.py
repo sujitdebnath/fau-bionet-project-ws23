@@ -224,5 +224,5 @@ st.plotly_chart(cell_anno_heatmap(
 # ---------- Summary of Cell Annotation ----------
 
 # ---------- Summary of DGE Analysis ----------
-st.markdown("#### 2. Summary of DGE Analysis")
+# st.markdown("#### 2. Summary of DGE Analysis")
 # ---------- Summary of DGE Analysis ----------
