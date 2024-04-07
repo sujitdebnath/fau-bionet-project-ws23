@@ -66,7 +66,7 @@ fau-bionets-project-ws23
 ## Project Details
 
 ### 1. Dataset
-Two datasets of two diseases, such as type II Diabetes Mellitus and Myeloproliferative Neoplasm (MPN) have been obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) repository. Details are as follows,
+Two data sources of two diseases, such as type II Diabetes Mellitus and Myeloproliferative Neoplasm (MPN) have been obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/) repository. Details are as follows,
 
 - **Diabetes Mellitus Type II:** This dataset investigates systemic immunological modifications caused by type 2 diabetes mellitus (DM) in patients diagnosed with periodontitis (PD). The research, conducted via single-cell RNA sequencing (scRNA-seq) analysis of peripheral blood mononuclear cells (PBMCs), aims to compare the immune response between patients with PD only and those with both PD and DM (PDDM). Through this study, researchers seek to enhance understanding of the complex immunological relationships between PD and DM. Sample distribution: _11 healthy control subjects, 10 patients with PD without DM, and 6 patients with PDDM_. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244515)]
 
@@ -77,7 +77,7 @@ In both of them, the experiment involved Homo sapiens as the organism and utiliz
 ### 2. Pipelines
 The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, please refer to the environment setup section.
 
-#### 2.1. Preprocessing adata
+#### 2.1. Preprocessing anndata
 The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
 
 #### 2.2. Automatic Cell-type Annotation
@@ -182,9 +182,9 @@ cd pipelines
 sh run_pipelines.sh
 
 # Run the dashboard
-streamlit run dashboard/streamlit_app.py
+streamlit run dashboard/_Home.py
 # or
-python3 -m streamlit run dashboard/streamlit_app.py
+python3 -m streamlit run dashboard/_Home.py
 ```
 
 ## Conclusion
