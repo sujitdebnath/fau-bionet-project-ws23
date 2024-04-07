@@ -26,7 +26,7 @@ st.markdown(hide_steamlit_style, unsafe_allow_html=True)
 st.markdown('<h1 style="text-align: center; color: black;">🧬 Project BioNets Dashboard</h1>', unsafe_allow_html=True)
 
 # ---------- Banner ----------
-banner_file     = open(os.path.join(BASE_DIR, 'img', 'banner2.gif'), "rb")
+banner_file     = open(os.path.join(BASE_DIR, 'docs', 'banner.gif'), "rb")
 banner_contents = banner_file.read()
 data_url        = base64.b64encode(banner_contents).decode("utf-8")
 banner_file.close()
