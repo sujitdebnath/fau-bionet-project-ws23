@@ -65,6 +65,7 @@ fau-bionets-project-ws23
 │   ├── pages/                          # Contains pages of Dashboard
 │   ├── _Home.py                        # Home page of Dashboard
 │   └── cell_anno_res.csv               # Contains summary results of cell annotation
+├── docs/                               # Documents directory for snapshots, videos, etc
 └── README.md                           # Project documentation
 ```
 
@@ -102,12 +103,24 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 
 - **Homepage:** Welcome screen providing an overview of the project and its objectives.
 - **Individual Results Showcase:** Detailed display of results for each dataset, allowing users to explore specific findings.
-- **Comparison Functionality:** Enables users to compare results across datasets for each diseases, facilitating insightful analysis.
+- **Comparison Functionality:** Enables users to compare results across datasets for each disease, facilitating insightful analysis.
 - **Interactive Summary Results:** Summarized overview of key findings, allowing for quick insights into the data.
 
-Watch the video demonstration of the dashboard below:
+Some snapshots of the dashboard are given below:
 
-![Dashboard](docs/streamlit_dashboard.mov)
+<div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <div style="flex: 1;">
+    <img class="img" src="./docs/pg_home.png" alt="homepage" width="48%" />
+    <img class="img" src="./docs/pg_summary.png" alt="summary page" width="48%" />
+  </div>
+</div>
+
+<div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
+  <div style="flex: 1;">
+    <img class="img" src="./docs/pg_indv_res.png" alt="individual results" width="48%" />
+    <img class="img" src="./docs/pg_comparison.png" alt="comparison" width="48%" />
+  </div>
+</div>
 
 ### 4. Results
 In progress
