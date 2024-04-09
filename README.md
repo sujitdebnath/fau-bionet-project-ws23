@@ -54,6 +54,7 @@ fau-bionets-project-ws23
 │   ├── run_pipelines.sh                # Script for running the whole pipeline
 │   └── cleaner.sh                      # Script for cleaning temporary files (optional)
 ├── results/                            # Results directory
+│   ├── summary/                        # Summary results directory
 │   ├── disease_id1/                    # Results directory of Disease 1
 │   │   ├── dataset_id1/                # Store results of dataset1
 │   │   ├── dataset_id2/                # Store results of dataset2
@@ -63,8 +64,10 @@ fau-bionets-project-ws23
 ├── dashboard/                          # Streamlit Dashboard directory
 │   ├── .streamlit/                     # Contains Streamlit config file
 │   ├── pages/                          # Contains pages of Dashboard
-│   ├── _Home.py                        # Home page of Dashboard
-│   └── cell_anno_res.csv               # Contains summary results of cell annotation
+│   │   ├── 1_Summary.py                # Summary page of Dashboard
+│   │   ├── 2_Individual_Results.py     # Individual results page of Dashboard
+│   │   └── 3_Comparison.py             # Comparison page of Dashboard
+│   └── _Home.py                        # Home page of Dashboard
 ├── docs/                               # Documents directory for snapshots, videos, etc
 │   ├── assets/                         # Contains readme assets
 │   ├── presentation/                   # Contains presentation files
