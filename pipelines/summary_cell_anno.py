@@ -1,12 +1,25 @@
 import os
+import sys
 import pandas as pd
 import scanpy as sc
 
 
-BASE_DIR      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DATA_DIR = os.path.join(BASE_DIR, 'dataset')
-BASE_RES_DIR  = os.path.join(BASE_DIR, 'results')
+BASE_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_RES_DIR = os.path.join(BASE_DIR, 'results')
 
+
+def create_directory(dir_path: str) -> str:
+    try:
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            print(f"Succeed: Directory created at {dir_path}")
+        else:
+            print(f"Succeed: Directory already exists at {dir_path}")
+    except Exception as e:
+        print(f"Failed: Error creating directory at {dir_path}. {e}")
+        sys.exit(1)
+    
+    return dir_path
 
 def load_adata(disease_id: str, dataset_id: str) -> sc.AnnData:
     dataset_path = os.path.join(BASE_DIR, 'pipelines', 'temp_adata', f'{disease_id}_{dataset_id}.h5ad')
@@ -35,7 +48,17 @@ def combine_all_adata_dfs() -> pd.DataFrame:
 
     return combined_df
 
-def standardize_cell_type_names(df: pd.DataFrame) -> pd.DataFrame:
+def standardize_cell_type_names(df: pd.DataFrame, cell_type_mapping: dict) -> pd.DataFrame:
+    # apply the mapping to all columns containing cell type names
+    for col in df.columns:
+        for cell_type, aliases in cell_type_mapping.items():
+            df[col] = df[col].replace(aliases, cell_type)
+
+    return df
+
+def main():
+    adata_dfs = combine_all_adata_dfs()
+
     # define mapping for standardizing cell type names
     cell_type_mapping = {
         'T-cell': ['T cell', 'T Cells', 'T', 'T follicular helper(Tfh) cell', 'T Helper Cells', 'CD4+ T cell', 'Naive CD8+ T cell', 'Natural killer T (NKT) cell', 'Gamma Delta T Cells', 'Regulatory T(Treg) cell', 'T Regulatory Cells', 'T Memory Cells'],
@@ -49,18 +72,11 @@ def standardize_cell_type_names(df: pd.DataFrame) -> pd.DataFrame:
         'Pancreatic cell': ['Pan'],
         'Unknown': ['Unknown']
     }
+    adata_standardize_dfs = standardize_cell_type_names(df=adata_dfs, cell_type_mapping=cell_type_mapping)
 
-    # apply the mapping to all columns containing cell type names
-    for col in df.columns:
-        for cell_type, aliases in cell_type_mapping.items():
-            df[col] = df[col].replace(aliases, cell_type)
-
-    return df
-
-def main():
-    adata_dfs             = combine_all_adata_dfs()
-    adata_standardize_dfs = standardize_cell_type_names(adata_dfs)
-    adata_standardize_dfs.to_csv(os.path.join(BASE_DIR, 'dashboard', 'cell_anno_res.csv'))
+    summary_dir = create_directory(dir_path=os.path.join(BASE_DIR, 'results', 'summary'))
+    adata_standardize_dfs.to_csv(os.path.join(summary_dir, 'cell_anno_res.csv'))
+    
     print(f"Combined df shape: {adata_dfs.shape}")
     print(adata_standardize_dfs['scsa_celltype_cellmarker'].unique())
     print(adata_standardize_dfs['scsa_celltype_panglaodb'].unique())
