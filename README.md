@@ -1,6 +1,6 @@
-> _**Disclaimer:** All necessary files, including data, documents, pipelines, and etc for the BioNets Project are the intellectual property of [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
+> _**Disclaimer:** All necessary files, including data, documents, pipelines, and etc for the BioNets Project are the intellectual property of Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab at [FAU Erlangen-Nürnberg](https://www.fau.eu/). Please be aware that copying content from here holds you accountable._
 
-![Banner GIF](docs/banner.gif)
+![Banner GIF](docs/assets/banner.gif)
 
 Welcome to the Biomedical Network Science (BioNets) Project repository for the Winter'23/24 semester at [Friedrich-Alexander University Erlangen-Nürnberg](https://www.fau.eu/). This repository contains necessary files and documents for the BioNets project called **"Large-scale Differential Gene Expression Analysis in scRNA-seq Data"**, proposed by Biomedical Network Science ([BIONETS](https://www.bionets.tf.fau.de/)) lab, supervised by [Prof. Dr. David B. Blumenthal](https://www.bionets.tf.fau.de/person/david-b-blumenthal/), and [Dr. Anne Hartebrodt](https://www.bionets.tf.fau.de/person/anne-hartebrodt/) at FAU Erlangen-Nürnberg.
 
@@ -52,7 +52,7 @@ fau-bionets-project-ws23
 │   │   └── diff_gene_exp_analysis.py   # Script for DGE analysis
 │   ├── summary_cell_anno.py            # Script for generating summary results for cell annotation
 │   ├── run_pipelines.sh                # Script for running the whole pipeline
-│   └── cleaner.sh                      # Script for cleaning temporary files
+│   └── cleaner.sh                      # Script for cleaning temporary files (optional)
 ├── results/                            # Results directory
 │   ├── disease_id1/                    # Results directory of Disease 1
 │   │   ├── dataset_id1/                # Store results of dataset1
@@ -66,6 +66,9 @@ fau-bionets-project-ws23
 │   ├── _Home.py                        # Home page of Dashboard
 │   └── cell_anno_res.csv               # Contains summary results of cell annotation
 ├── docs/                               # Documents directory for snapshots, videos, etc
+│   ├── assets/                         # Contains readme assets
+│   ├── presentation/                   # Contains presentation files
+│   └── report/                         # Contains report files
 └── README.md                           # Project documentation
 ```
 
@@ -106,19 +109,19 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 - **Comparison Functionality:** Enables users to compare results across datasets for each disease, facilitating insightful analysis.
 - **Interactive Summary Results:** Summarized overview of key findings, allowing for quick insights into the data.
 
-Some snapshots of the dashboard are given below. And for video demostration please click [here](./docs/streamlit_dashboard.mov).
+Some snapshots of the dashboard are given below. And for video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
 
 <div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <div style="flex: 1;">
-    <img class="img" src="./docs/pg_home.png" alt="homepage" width="48%" />
-    <img class="img" src="./docs/pg_summary.png" alt="summary page" width="48%" />
+    <img class="img" src="./docs/assets/pg_home.png" alt="homepage" width="48%" />
+    <img class="img" src="./docs/assets/pg_summary.png" alt="summary page" width="48%" />
   </div>
 </div>
 
 <div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <div style="flex: 1;">
-    <img class="img" src="./docs/pg_indv_res.png" alt="individual results" width="48%" />
-    <img class="img" src="./docs/pg_comparison.png" alt="comparison" width="48%" />
+    <img class="img" src="./docs/assets/pg_indv_res.png" alt="individual results" width="48%" />
+    <img class="img" src="./docs/assets/pg_comparison.png" alt="comparison" width="48%" />
   </div>
 </div>
 
