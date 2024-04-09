@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -91,8 +91,6 @@ def cell_anno_box_plot2(df, cell_anno_method):
 
     return fig
 
-import plotly.graph_objects as go
-
 def cell_anno_heatmap(df, disease_id, anno_method1, anno_method2):
     cell_anno_col1 = map_cell_anno_method_to_col_name(anno_method1)
     cell_anno_col2 = map_cell_anno_method_to_col_name(anno_method2)
@@ -108,8 +106,8 @@ def cell_anno_heatmap(df, disease_id, anno_method1, anno_method2):
         z=co_occurrence_matrix.values,
         x=co_occurrence_matrix.columns,
         y=co_occurrence_matrix.index,
-        colorscale='Viridis',  # Choose a color scale
-        hoverongaps=False  # Disable hover on gaps
+        colorscale='Viridis',
+        hoverongaps=False
     ))
 
     # Customize layout
@@ -117,7 +115,7 @@ def cell_anno_heatmap(df, disease_id, anno_method1, anno_method2):
         title=f"Cell Type Co-occurrence Heatmap for {disease_id.upper()} Disease",
         xaxis_title=anno_method2,
         yaxis_title=anno_method1,
-        xaxis=dict(side="top"),  # Display x-axis on top
+        xaxis=dict(side="top"),
         height=800,
         width=800
     )
@@ -175,7 +173,7 @@ st.markdown(
 
 col1, col2, col3, col4 = st.columns(4)
 
-disease_ids = [dir for dir in os.listdir(BASE_RES_DIR) if os.path.isdir(os.path.join(BASE_RES_DIR, dir))]
+disease_ids = [dir for dir in os.listdir(BASE_RES_DIR) if os.path.isdir(os.path.join(BASE_RES_DIR, dir)) and dir != 'summary']
 dataset_ids = [dataset_id for disease_id in disease_ids for dataset_id in os.listdir(os.path.join(BASE_RES_DIR, disease_id))]
 
 # Metrics in card-like design
@@ -197,7 +195,7 @@ st.markdown("##### 1.1. Distribution of Cell Types (unknown labels excluded)")
 cell_anno_methods = ['SCSA - cellmarker', 'SCSA - panglaodb', 'MetaTiME']
 cell_anno_methods_box = st.selectbox('Select Cell-type Annotation Method', cell_anno_methods, key='1')
 
-cell_anno_df = read_csv(csv_fpath=os.path.join(BASE_DIR, 'dashboard', 'cell_anno_res.csv'))
+cell_anno_df = read_csv(csv_fpath=os.path.join(BASE_RES_DIR, 'summary', 'cell_anno_res.csv'))
 # st.pyplot(cell_anno_box_plot2(df=cell_anno_df, cell_anno_method=cell_anno_methods_box))
 st.plotly_chart(cell_anno_box_plot(df=cell_anno_df, cell_anno_method=cell_anno_methods_box), use_container_width=True)
 # ---------- Summary 1 ----------

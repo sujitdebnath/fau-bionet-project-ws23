@@ -37,7 +37,7 @@ st.markdown('<h1 style="text-align: center; color: black;">🧬 Project BioNets 
 col1, col2 = st.columns(2)
 with col1:
     # Select Disease
-    disease_ids = sorted([dir for dir in os.listdir(BASE_RES_DIR) if os.path.isdir(os.path.join(BASE_RES_DIR, dir))])
+    disease_ids = sorted([dir for dir in os.listdir(BASE_RES_DIR) if os.path.isdir(os.path.join(BASE_RES_DIR, dir)) and dir != 'summary'])
     disease_id = st.selectbox('Select Disease', disease_ids)
 with col2:
     # Select Dataset
