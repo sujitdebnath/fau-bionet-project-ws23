@@ -108,9 +108,9 @@ The differential gene expression (DGE) analysis pipeline performs gene expressio
 Our project features a dynamic dashboard built on [Streamlit](https://streamlit.io), offering multiple functionalities.
 
 - **Homepage:** Welcome screen providing an overview of the project and its objectives.
-- **Individual Results Showcase:** Detailed display of results for each dataset, allowing users to explore specific findings.
-- **Comparison Functionality:** Enables users to compare results across datasets for each disease, facilitating insightful analysis.
-- **Interactive Summary Results:** Summarized overview of key findings, allowing for quick insights into the data.
+- **Individual Results Showcase:** Detailed display of results for each dataset.
+- **Comparison Functionality:** Enables users to compare results across datasets for each disease.
+- **Interactive Summary Results:** Summarized overview of key findings.
 
 Some snapshots of the dashboard are given below. And for video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
 
@@ -130,6 +130,9 @@ Some snapshots of the dashboard are given below. And for video demostration plea
 
 ### 4. Results
 In progress
+
+- Presentation slide: [pptx-url](./docs/presentation/Project%20BioNets%20-%20WS23.pptx), or [googleslide-url](https://docs.google.com/presentation/d/18BIoMRegnRVYEGkMIPnDYuD5Apvs-wQcIb0sJqPO0b0/edit?usp=share_link)
+- Report: [report-url](./docs/report/report.pdf)
 
 ## Environment Setup
 
