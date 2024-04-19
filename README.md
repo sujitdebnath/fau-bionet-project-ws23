@@ -50,7 +50,7 @@ fau-bionets-project-ws23
 │   │   ├── adata_preprocessor.py       # Script for preprocessing
 │   │   ├── cell_type_annotation.py     # Script for automatic cell annotation
 │   │   └── diff_gene_exp_analysis.py   # Script for DGE analysis
-│   ├── summary_cell_anno.py            # Script for generating summary results for cell annotation
+│   ├── summary_cell_anno.py            # Script for generating summary results
 │   ├── run_pipelines.sh                # Script for running the whole pipeline
 │   └── cleaner.sh                      # Script for cleaning temporary files (optional)
 ├── results/                            # Results directory
@@ -84,10 +84,10 @@ Two data sources of two diseases, such as type II Diabetes Mellitus and Myelopro
 
 - **Myeloproliferative Neoplasm (MPN):**  This dataset encompasses a comprehensive analysis of platelets derived from patients diagnosed with MPNs, particularly essential thrombocythemia (ET). The study, conducted by researchers, revealed significant metabolic alterations mediating aberrant platelet activity and inflammation in MPNs through single-cell RNA sequencing (scRNA-Seq) analysis of primary PBMC samples. Notably, transcripts related to platelet activation, mTOR, and oxidative phosphorylation (OXPHOS) were found to be enriched in ET platelets. [[source-url](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE244589)]
 
-In both of them, the experiment involved Homo sapiens as the organism and utilized expression profiling by high throughput sequencing as the primary experimental method. Case vs. control datasets for each disease were prepared by categorizing individuals into two groups: cases and controls. Cases consisted of individuals diagnosed with the respective disease (MPNs or Diabetes II), while controls comprised individuals without the disease. This stratification allowed for comparative analysis between the two groups to identify disease-associated features and patterns within the scRNA-seq data.
+In both of them, the experiment involved Homo sapiens as the organism and utilized expression profiling by high throughput sequencing as the primary experimental method. Case vs. Control datasets for each disease were prepared by categorizing individuals into two groups: cases and controls. Cases consisted of individuals diagnosed with the respective disease (MPNs or Diabetes II), while controls comprised individuals without the disease. This stratification allowed for comparative analysis between the two groups to identify disease-associated features and patterns within the scRNA-seq data.
 
 ### 2. Pipelines
-The overall pipeline consists of three key stages: preprocessing adata, automatic cell-type annotation, and differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, please refer to the environment setup section.
+The overall pipeline consists of **three key stages**: (i) preprocessing adata, (ii) automatic cell-type annotation, and (iii) differential gene expression (DGE) analysis. These stages are designed to process single-cell RNA sequencing (scRNA-seq) data, annotate cell types, and identify differentially expressed genes associated with case vs control dataset for a specific disease. However, the overall pipelines are managed and executed using the `run_pipelines.sh` script [[script-url](./pipelines/run_pipelines.sh)]. For detailed instructions on running the pipelines, please refer to the environment setup section.
 
 #### 2.1. Preprocessing anndata
 The preprocessing pipeline applies quantity control to filter low-quality observations based on thresholds for mitochondrial gene expression, UMIs, and detected genes. It then normalizes the data using logarithmic transformation and Pearson correlation, selects highly variable genes, and performs principal component analysis (PCA) for dimensionality reduction. Finally, it constructs a neighborhood graph for visualization and applies clustering methods such as Leiden to identify cell populations. [[script-url](./pipelines/services/adata_preprocessor.py)]
@@ -112,7 +112,7 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 - **Comparison Functionality:** Enables users to compare results across datasets for each disease.
 - **Interactive Summary Results:** Summarized overview of key findings.
 
-Some snapshots of the dashboard are given below. And for video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
+Some snapshots of the dashboard are given below. To see the video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
 
 <div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <div style="flex: 1;">
@@ -226,3 +226,5 @@ python3 -m streamlit run dashboard/_Home.py
 ## Conclusion
 
 The BioNets project offers comprehensive pipelines for large-scale scRNA-seq data analysis, contributing to advancements in biomedical network science. By integrating automatic cell-type annotation and differential gene expression analysis, our project facilitates deeper insights into disease mechanisms. Furthermore, the interactive dashboard promises enhanced data exploration and comparison, empowering researchers with intuitive tools for comprehensive data interpretation and hypothesis generation.
+
+Feel free to explore the intriguing world of Biomedical Network Science through this project repository!
