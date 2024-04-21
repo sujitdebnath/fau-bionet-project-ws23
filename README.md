@@ -115,7 +115,8 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 Some snapshots of the dashboard are given below. To see the video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
 
 ## Video
-https://github.com/sujitdebnath/fau-bionets-project-ws23/blob/main/docs/presentation/streamlit_dashboard.mp4
+
+https://github.com/sujitdebnath/fau-bionets-project-ws23/assets/47503518/11b5f0d8-a1a8-4649-b67f-377f7c8ecbbe
 
 ##
 
