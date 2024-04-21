@@ -112,27 +112,9 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 - **Comparison Functionality:** Enables users to compare results across datasets for each disease.
 - **Interactive Summary Results:** Summarized overview of key findings.
 
-Some snapshots of the dashboard are given below. To see the video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
-
-## Video
+Check out a video demonstration of our dashboard below:
 
 https://github.com/sujitdebnath/fau-bionets-project-ws23/assets/47503518/11b5f0d8-a1a8-4649-b67f-377f7c8ecbbe
-
-##
-
-<div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
-  <div style="flex: 1;">
-    <img class="img" src="./docs/assets/pg_home.png" alt="homepage" width="48%" />
-    <img class="img" src="./docs/assets/pg_summary.png" alt="summary page" width="48%" />
-  </div>
-</div>
-
-<div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
-  <div style="flex: 1;">
-    <img class="img" src="./docs/assets/pg_indv_res.png" alt="individual results" width="48%" />
-    <img class="img" src="./docs/assets/pg_comparison.png" alt="comparison" width="48%" />
-  </div>
-</div>
 
 ### 4. Results
 In progress
