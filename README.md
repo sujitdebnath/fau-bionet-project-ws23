@@ -114,6 +114,11 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 
 Some snapshots of the dashboard are given below. To see the video demostration please click [here](./docs/presentation/streamlit_dashboard.mov).
 
+## Video
+https://github.com/sujitdebnath/fau-bionets-project-ws23/blob/main/docs/presentation/streamlit_dashboard.mp4
+
+##
+
 <div align="center" style="display: flex; justify-content: space-between; align-items: flex-start;">
   <div style="flex: 1;">
     <img class="img" src="./docs/assets/pg_home.png" alt="homepage" width="48%" />
