@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 
-BASE_DIR      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-BASE_RES_DIR  = os.path.join(BASE_DIR, 'results')
+BASE_DIR     = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_RES_DIR = os.path.join(BASE_DIR, 'results')
 
 def read_csv(csv_fpath):
     return pd.read_csv(csv_fpath, index_col=0)
