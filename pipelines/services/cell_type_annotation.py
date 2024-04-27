@@ -1,16 +1,30 @@
+# Python imports
 import os
 import argparse
+from typing import Callable, Any, Tuple
+
+# Third-party imports
 import pandas as pd
 import scanpy as sc
-import omicverse as ov
 import seaborn as sns
 import matplotlib.pyplot as plt
-from typing import Callable, Any, Tuple
+import omicverse as ov
 from metatime import config, mecmapper, mecs, annotator
+
+# Self imports
 import adata_handler
 
 
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """
+    Add arguments to the given ArgumentParser object.
+
+    Parameters:
+        parser (argparse.ArgumentParser): The ArgumentParser object to which arguments will be added.
+
+    Returns:
+        argparse.ArgumentParser: The ArgumentParser object with added arguments.
+    """
     parser.add_argument('--disease_id', type=str, help='Unique identifier for disease, e.g., diabetesII, mpn')
     parser.add_argument('--dataset_id', type=str, help='Unique identifier of the dataset for that specific disease')
     parser.add_argument('--anno_methods', nargs='+', type=str, default=['scsa', 'metatime'],
@@ -28,6 +42,22 @@ def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
 def apply_cell_type_anno_scsa(adata: sc.AnnData, cellmarker: bool, panglaodb: bool,
                               foldchange: float, pvalue: float, celltype: str,
                               clustertype: str, rank_rep: bool) -> None:
+    """
+    Apply SCSA cell type annotation.
+
+    Parameters:
+        adata (sc.AnnData): The AnnData object containing gene expression data.
+        cellmarker (bool): Whether to use CellMarker as the reference dataset for SCSA annotation.
+        panglaodb (bool): Whether to use PanglaoDB as the reference dataset for SCSA annotation.
+        foldchange (float): Fold change threshold for SCSA.
+        pvalue (float): P-value threshold for SCSA.
+        celltype (str): Cell type for annotation for SCSA.
+        clustertype (str): Clustering name used in scanpy for SCSA.
+        rank_rep (bool): Whether to use rank representation for SCSA.
+
+    Returns:
+        None
+    """
     if cellmarker:
         scsa = ov.single.pySCSA(adata=adata, foldchange=foldchange, pvalue=pvalue,
                                 celltype=celltype, target='cellmarker', tissue='All')
@@ -43,10 +73,21 @@ def apply_cell_type_anno_scsa(adata: sc.AnnData, cellmarker: bool, panglaodb: bo
         scsa.cell_auto_anno(adata, key='scsa_celltype_panglaodb')
 
 def apply_cell_type_anno_metatime(adata: sc.AnnData) -> None:
+    """
+    Apply cell type annotation using MetaTiME.
+
+    Parameters:
+        adata (sc.AnnData): The AnnData object containing gene expression data.
+
+    Returns:
+        None
+    """
     # MetaTiME using Omicverse
+    # ------------------------------------------------
     # metatime_obj = ov.single.MetaTiME(adata, mode='table')
     # metatime_obj.overcluster(resolution=21, clustercol='overcluster')
     # metatime_obj.predictTiME(save_obs_name='MetaTiME')
+    # ------------------------------------------------
     
     # MetaTiME - manual
     # ------------------------------------------------
@@ -79,6 +120,25 @@ def plot_embeddings(
         plot_fname: str = None,
         *args, **kwargs
     ) -> None:
+    """
+    Plot embeddings for scRNA-seq data.
+
+    Parameters:
+        adata (sc.AnnData): The AnnData object containing gene expression data.
+        disease_id (str): Unique identifier for the disease.
+        dataset_id (str): Unique identifier for the dataset.
+        plot_function (Callable): The function used to generate the plot.
+        fig_size (Tuple[int, int]): The size of the figure.
+        plot_title (str, optional): The title of the plot. Defaults to None.
+        xlabel (str, optional): The label for the x-axis. Defaults to None.
+        ylabel (str, optional): The label for the y-axis. Defaults to None.
+        plot_fname (str, optional): The filename for saving the plot. Defaults to None.
+        *args: Additional positional arguments passed to the plot function.
+        **kwargs: Additional keyword arguments passed to the plot function.
+
+    Returns:
+        None
+    """
     figures_dir = os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id)
 
     try:
@@ -97,6 +157,17 @@ def plot_embeddings(
         print(f"Failed: Error during plot generation, {str(e)}")
 
 def calculate_roe(adata: sc.AnnData, sample_key: str, cell_type_key: str) -> pd.DataFrame:
+    """
+    Calculate Ratio of Observed to Expected cell numbers (Ro/e).
+
+    Parameters:
+        adata (sc.AnnData): The AnnData object containing gene expression data.
+        sample_key (str): The key in adata.obs representing sample identifiers.
+        cell_type_key (str): The key in adata.obs representing cell type annotations.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the Ro/e values.
+    """
     roe = None
 
     try:
@@ -106,7 +177,18 @@ def calculate_roe(adata: sc.AnnData, sample_key: str, cell_type_key: str) -> pd.
 
     return roe
 
-def plot_roe(roe: pd.DataFrame, disease_id: str, dataset_id: str,):
+def plot_roe(roe: pd.DataFrame, disease_id: str, dataset_id: str) -> None:
+    """
+    Plot the Ro/e.
+
+    Parameters:
+        roe (pd.DataFrame): A DataFrame containing the Ro/e values.
+        disease_id (str): The unique identifier for the disease.
+        dataset_id (str): The unique identifier for the dataset.
+
+    Returns:
+        None
+    """
     figures_dir = os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id)
     fig, ax     = plt.subplots(figsize=(2, 4))
 
@@ -123,6 +205,15 @@ def plot_roe(roe: pd.DataFrame, disease_id: str, dataset_id: str,):
     plt.savefig(os.path.join(figures_dir, 'roe.png'), bbox_inches='tight')
 
 def main() -> None:
+    """
+    Main function for the Automatic Cell-type Annotation Script.
+
+    Parameters:
+        None
+    
+    Returns:
+        None
+    """
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
