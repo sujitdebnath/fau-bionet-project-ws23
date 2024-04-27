@@ -1,14 +1,29 @@
+# Python imports
 import os
 import sys
+
+# Third-party imports
 import pandas as pd
 import scanpy as sc
 
+# Self imports
 
+
+# Define the necessary directories of the project
 BASE_DIR     = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_RES_DIR = os.path.join(BASE_DIR, 'results')
 
 
 def create_directory(dir_path: str) -> str:
+    """
+    Create a directory if it does not exist.
+
+    Parameters:
+        dir_path (str): The path of the directory to be created.
+
+    Returns:
+        str: The path of the created directory.
+    """
     try:
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
@@ -22,12 +37,31 @@ def create_directory(dir_path: str) -> str:
     return dir_path
 
 def load_adata(disease_id: str, dataset_id: str) -> sc.AnnData:
+    """
+    Load an AnnData object from a file.
+
+    Parameters:
+        disease_id (str): Unique identifier for the disease.
+        dataset_id (str): Unique identifier for the dataset.
+
+    Returns:
+        sc.AnnData: The loaded AnnData object.
+    """
     dataset_path = os.path.join(BASE_DIR, 'pipelines', 'temp_adata', f'{disease_id}_{dataset_id}.h5ad')
     adata        = sc.read_h5ad(dataset_path)
     
     return adata
 
 def combine_all_adata_dfs() -> pd.DataFrame:
+    """
+    Combine all AnnData objects into a single DataFrame.
+
+    Parameters:
+        None
+    
+    Returns:
+        pd.DataFrame: The combined DataFrame.
+    """
     disease_ids   = sorted([dir for dir in os.listdir(BASE_RES_DIR) if os.path.isdir(os.path.join(BASE_RES_DIR, dir))])
     all_adata_dfs = []
 
@@ -49,6 +83,16 @@ def combine_all_adata_dfs() -> pd.DataFrame:
     return combined_df
 
 def standardize_cell_type_names(df: pd.DataFrame, cell_type_mapping: dict) -> pd.DataFrame:
+    """
+    Standardize cell type names in a DataFrame using a given mapping.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing cell type names to be standardized.
+        cell_type_mapping (dict): Dictionary mapping original cell type names to standardized names.
+
+    Returns:
+        pd.DataFrame: DataFrame with standardized cell type names.
+    """
     # apply the mapping to all columns containing cell type names
     for col in df.columns:
         for cell_type, aliases in cell_type_mapping.items():
@@ -57,6 +101,18 @@ def standardize_cell_type_names(df: pd.DataFrame, cell_type_mapping: dict) -> pd
     return df
 
 def main():
+    """
+    Main function for processing and standardizing cell type annotations.
+
+    Combines cell type annotations from different datasets, standardizes cell type names,
+    and saves the results to a CSV file.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
     adata_dfs = combine_all_adata_dfs()
 
     # define mapping for standardizing cell type names
