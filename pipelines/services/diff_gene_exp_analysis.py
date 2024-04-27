@@ -1,14 +1,28 @@
+# Python imports
 import os
 import argparse
+from typing import List
+
+# Third-party imports
 import numpy as np
 import pandas as pd
 import scanpy as sc
 import omicverse as ov
-from typing import List
+
+# Self imports
 import adata_handler
 
 
 def parse_add_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """
+    Parse and add command-line arguments related to differential gene expression analysis.
+
+    Parameters:
+        parser (argparse.ArgumentParser): Argument parser object.
+
+    Returns:
+        argparse.ArgumentParser: Updated argument parser object.
+    """
     parser.add_argument('--disease_id', type=str, help='Unique identifier for disease, e.g., diabetesII, mpn')
     parser.add_argument('--dataset_id', type=str, help='Unique identifier of the dataset for that specific disease')
     parser.add_argument('--dge_methods', nargs='+', type=str,
@@ -23,6 +37,19 @@ def perform_diff_gene_exp_analysis(
         dge_methods: List,
         specific_celltype: str
     ) -> None:
+    """
+    Perform differential gene expression analysis.
+
+    Parameters:
+        adata (sc.AnnData): Annotated data object.
+        disease_id (str): Unique identifier for disease.
+        dataset_id (str): Unique identifier of the dataset for that specific disease.
+        dge_methods (List): List of differential gene expression analysis methods.
+        specific_celltype (str): Specific cell type for analysis.
+
+    Returns:
+        None
+    """
     all_results = pd.DataFrame()
     
     for method in dge_methods:
@@ -68,6 +95,18 @@ def perform_diff_gene_exp_analysis(
     all_results.to_csv(os.path.join(adata_handler.BASE_RES_DIR, disease_id, dataset_id, f'dge_analysis_result.csv'), index=False)
 
 def main() -> None:
+    """
+    Main function for performing automatic differential gene expression analysis.
+
+    Parses command-line arguments, loads annotated data, performs differential gene expression analysis,
+    and saves the results to a CSV file.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
     parser = argparse.ArgumentParser(description='Automatic Cell-type Annotation Script')
     parser = parse_add_args(parser)
     args   = parser.parse_args()
