@@ -123,15 +123,15 @@ In this section, we present the outcomes of our team project, which consists of 
 
 **Distribution for Case vs Control:** The figure below represents the distribution of cell types in case vs control datasets for Diabetes Type 2 (a-c) and MPN diseases (d-f), annotated using different cell annotation methods. Specifically, (a) and (d) represent SCSA with cellmarker, (b) and (e) represent SCSA with panglaodb, (c) and (f) depict MetaTiME annotations.
 
-![Distribution for Case vs Control](./docs/report/dist_case_control.jpeg)
+![Distribution for Case vs Control](./results/summary/dist_case_control.jpeg)
 
 **Distribution According to Annotation Methods:** The figure below demonstrates the distribution of cell types according to all annotation methods for Type 2 Diabetes (a) and Myeloproliferative Neoplasm (MPN) diseases (b).
 
-![Distribution According to Annotation Methods](./docs/report/dist_anno_methods.jpeg)
+![Distribution According to Annotation Methods](./results/summary/dist_anno_methods.jpeg)
 
 **Cell Type Co-occurrence For All Diseases:** The figure below unveils the cell type co-occurrence heatmap for Diabetes Type 2 (a-c) and MPN diseases (d-f). Specifically, (a) and (d) represent SCSA - cellmarker vs SCSA - panglaodb, (b) and (e) represent SCSA - cellmarker vs MetaTiME, (c) and (f) depict SCSA - panglaodb vs MetaTiME.
 
-![Cell Type Co-occurrence For All Diseases](./docs/report/heatmap.jpeg)
+![Cell Type Co-occurrence For All Diseases](./results/summary/heatmap.jpeg)
 
 ## Environment Setup
 
