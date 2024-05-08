@@ -114,7 +114,7 @@ Our project features a dynamic dashboard built on [Streamlit](https://streamlit.
 
 Check out a video demonstration of our dashboard below:
 
-https://github.com/sujitdebnath/fau-bionets-project-ws23/assets/47503518/11b5f0d8-a1a8-4649-b67f-377f7c8ecbbe
+https://github.com/sujitdebnath/fau-bionets-project-ws23/assets/47503518/0666e793-4cdc-479f-a9d1-e6917e6a804c
 
 ### 4. Results
 In this section, we present the outcomes of our team project, which consists of two significant components: automatic cell annotation and DGE Analysis. For further details, please refer to our presentation slides available [here](./docs/presentation/presentation_slide.pptx) or access them via Google Slides [here](https://docs.google.com/presentation/d/18BIoMRegnRVYEGkMIPnDYuD5Apvs-wQcIb0sJqPO0b0/edit?usp=share_link). Additionally, our comprehensive report can be accessed [here](./docs/report/report.pdf).
